@@ -1,24 +1,25 @@
 package com.github.oreganoli.starchart;
 
 public class Star {
-    private Declination declination;
     private static final double MIN_TEMPERATURE = 2000.0;
+    private Declination declination;
+    public RightAscension right_ascension;
     private String name;
     private String catalog_name;
     private double temperature;
     private Hemisphere hemisphere;
 
-    Star(String name, double temperature, Declination declination, Constellation.ConstellationHandle handle) {
+    Star(String name, double temperature, Declination declination, RightAscension ascension, Constellation.ConstellationHandle handle) {
         set_name(name);
         set_temperature(temperature);
         set_declination(declination);
+        this.right_ascension = ascension;
     }
     private Constellation constellation;
 
     public Declination declination() {
         return declination;
     }
-
     public void set_declination(Declination declination) {
         this.declination = declination;
         this.hemisphere = this.declination.hemisphere();
