@@ -2,18 +2,34 @@ package com.github.oreganoli.starchart;
 
 public class Star {
     private static final double MIN_TEMPERATURE = 2000.0;
+    private static final double MIN_MASS = 0.1;
+    private static final double MAX_MASS = 50.0;
     private Declination declination;
     public RightAscension right_ascension;
     private String name;
     private String catalog_name;
     private double temperature;
     private Hemisphere hemisphere;
+    private double mass;
 
-    Star(String name, double temperature, Declination declination, RightAscension ascension, Constellation.ConstellationHandle handle) {
+    Star(String name, double temperature, double mass, Declination declination, RightAscension ascension, Constellation.ConstellationHandle handle) {
         set_name(name);
         set_temperature(temperature);
+        set_mass(mass);
         set_declination(declination);
         this.right_ascension = ascension;
+    }
+
+    public double mass() {
+        return mass;
+    }
+
+    public void set_mass(double mass) {
+        if (mass < MIN_MASS || mass > MAX_MASS) {
+            throw new IllegalArgumentException("Stars are assumed to have a mass between one-tenth that of the Sun to fifty times that of the Sun.");
+        } else {
+            this.mass = mass;
+        }
     }
     private Constellation constellation;
 

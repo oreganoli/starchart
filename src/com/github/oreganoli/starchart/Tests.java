@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class Tests {
     private static Constellation constellation = new Constellation("Probātiōnis");
+    private static double valid_temp = 5672.9132;
+    private static double valid_mass = 40.73;
     private static Declination valid_declination = new Declination(56, 3, 21);
     private static RightAscension valid_ascension = new RightAscension(23, 59, 32);
 
@@ -42,21 +44,28 @@ class Tests {
     }
 
     @Test
+    void test_star_mass() {
+        assertThrows(IllegalArgumentException.class, () -> constellation.add_star("MSS0001", valid_temp, 0.05, valid_declination, valid_ascension));
+        assertThrows(IllegalArgumentException.class, () -> constellation.add_star("MSS0002", valid_temp, 90.23, valid_declination, valid_ascension));
+        constellation.add_star("MSS0003", valid_temp, valid_mass, valid_declination, valid_ascension);
+    }
+
+    @Test
     void test_star_names() {
-        assertThrows(IllegalArgumentException.class, () -> constellation.add_star("INVALID", 2000.0, valid_declination, valid_ascension));
-        constellation.add_star("NAM0001", 2000.0, valid_declination, valid_ascension);
+        assertThrows(IllegalArgumentException.class, () -> constellation.add_star("INVALID", 2000.0, valid_mass, valid_declination, valid_ascension));
+        constellation.add_star("NAM0001", valid_temp, valid_mass, valid_declination, valid_ascension);
     }
 
     @Test
     void test_star_temperature() {
-        assertThrows(IllegalArgumentException.class, () -> constellation.add_star("TMP0001", 80.0, valid_declination, valid_ascension));
-        constellation.add_star("TMP0002", 9000.0, valid_declination, valid_ascension);
+        assertThrows(IllegalArgumentException.class, () -> constellation.add_star("TMP0001", 80.0, valid_mass, valid_declination, valid_ascension));
+        constellation.add_star("TMP0002", valid_temp, valid_mass, valid_declination, valid_ascension);
     }
 
     @Test
     void test_catalog_naming() {
-        constellation.add_star("CAT0001", 7840.2, valid_declination, valid_ascension);
-        constellation.add_star("CAT0002", 8000.0, valid_declination, valid_ascension);
+        constellation.add_star("CAT0001", valid_temp, valid_mass, valid_declination, valid_ascension);
+        constellation.add_star("CAT0002", valid_mass, valid_mass, valid_declination, valid_ascension);
         assertEquals(constellation.stars()[1].catalog_name(), "Beta Probātiōnis");
     }
 }

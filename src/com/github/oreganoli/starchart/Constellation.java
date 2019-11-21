@@ -16,8 +16,8 @@ public class Constellation {
         return name;
     }
 
-    void add_star(String name, double temperature, Declination declination, RightAscension ascension) {
-        stars.add(new Star(name, temperature, declination, ascension, handle));
+    void add_star(String name, double temperature, double mass, Declination declination, RightAscension ascension) {
+        stars.add(new Star(name, temperature, mass, declination, ascension, handle));
         rename_stars();
     }
 
