@@ -37,3 +37,5 @@ hs_err_pid*
 .idea/**/contentModel.xml
 .idea/**/gradle.xml
 .idea/**/libraries
+
+out/
