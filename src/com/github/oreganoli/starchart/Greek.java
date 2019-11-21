@@ -1,7 +1,7 @@
 package com.github.oreganoli.starchart;
 
-public class Greek {
-    private static final String[] ALPHABET = {
+class Greek {
+    static final String[] ALPHABET = {
             "Alpha",
             "Beta",
             "Gamma",
