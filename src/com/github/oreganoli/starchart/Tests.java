@@ -45,6 +45,12 @@ class Tests {
     }
 
     @Test
+    void test_star_distance() {
+        assertThrows(IllegalArgumentException.class, () -> constellation.add_star("DST0001", valid_temp, 0.0, valid_mass, valid_declination, valid_ascension));
+        assertThrows(IllegalArgumentException.class, () -> constellation.add_star("DST0002", valid_temp, -90.0, valid_mass, valid_declination, valid_ascension));
+        constellation.add_star("DST0003", valid_temp, valid_dist, valid_mass, valid_declination, valid_ascension);
+    }
+    @Test
     void test_star_mass() {
         assertThrows(IllegalArgumentException.class, () -> constellation.add_star("MSS0001", valid_temp, valid_dist, 0.05, valid_declination, valid_ascension));
         assertThrows(IllegalArgumentException.class, () -> constellation.add_star("MSS0002", valid_temp, valid_dist, 90.23, valid_declination, valid_ascension));
