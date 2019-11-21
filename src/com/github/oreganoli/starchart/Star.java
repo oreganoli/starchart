@@ -1,21 +1,32 @@
 package com.github.oreganoli.starchart;
 
 public class Star {
+    private static final double LY_TO_PC = 3.26;
+    private static final double MIN_APPARENT_MAGNITUDE = -26.74;
     private static final double MIN_TEMPERATURE = 2000.0;
     private static final double MIN_MASS = 0.1;
     private static final double MAX_MASS = 50.0;
     private static final double MAX_APPARENT_MAGNITUDE = 15.00;
     private double apparent_magnitude;
+    private double absolute_magnitude;
 
     Star(Constellation constellation, String name, double temperature, double distance, double mass, Declination declination, RightAscension ascension, double apparent_magnitude, Constellation.ConstellationHandle handle) {
         this.constellation = constellation;
         set_name(name);
         set_temperature(temperature);
         set_distance(distance);
+        set_apparent_magnitude(apparent_magnitude);
         set_mass(mass);
         set_declination(declination);
         this.right_ascension = ascension;
-        set_apparent_magnitude(apparent_magnitude);
+    }
+
+    private void calculate_absolute_magnitude() {
+        absolute_magnitude = apparent_magnitude - 5 * Math.log10(ly_to_pc(distance)) + 5;
+    }
+
+    double absolute_magnitude() {
+        return absolute_magnitude;
     }
     private Declination declination;
     public RightAscension right_ascension;
@@ -41,6 +52,7 @@ public class Star {
             throw new IllegalArgumentException("Stars are assumed to have an apparent magnitude between -26.74 and 15.");
         } else {
             apparent_magnitude = magnitude;
+            calculate_absolute_magnitude();
         }
     }
 
@@ -57,6 +69,7 @@ public class Star {
             throw new IllegalArgumentException("A star must be at least some distance away from the observer.");
         } else {
             this.distance = distance;
+            calculate_absolute_magnitude();
         }
     }
 
