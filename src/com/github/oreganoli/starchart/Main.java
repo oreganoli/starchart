@@ -1,4 +1,4 @@
-package com.github.oreganoli;
+package com.github.oreganoli.starchart;
 
 public class Main {
 
