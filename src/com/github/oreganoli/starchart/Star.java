@@ -4,6 +4,19 @@ public class Star {
     private static final double MIN_TEMPERATURE = 2000.0;
     private static final double MIN_MASS = 0.1;
     private static final double MAX_MASS = 50.0;
+    private static final double MAX_APPARENT_MAGNITUDE = 15.00;
+    private double apparent_magnitude;
+
+    Star(Constellation constellation, String name, double temperature, double distance, double mass, Declination declination, RightAscension ascension, double apparent_magnitude, Constellation.ConstellationHandle handle) {
+        this.constellation = constellation;
+        set_name(name);
+        set_temperature(temperature);
+        set_distance(distance);
+        set_mass(mass);
+        set_declination(declination);
+        this.right_ascension = ascension;
+        set_apparent_magnitude(apparent_magnitude);
+    }
     private Declination declination;
     public RightAscension right_ascension;
     private String name;
@@ -15,14 +28,20 @@ public class Star {
     private Hemisphere hemisphere;
     private double mass;
 
-    Star(Constellation constellation, String name, double temperature, double distance, double mass, Declination declination, RightAscension ascension, Constellation.ConstellationHandle handle) {
-        this.constellation = constellation;
-        set_name(name);
-        set_temperature(temperature);
-        set_distance(distance);
-        set_mass(mass);
-        set_declination(declination);
-        this.right_ascension = ascension;
+    public static double ly_to_pc(double ly) {
+        return ly / LY_TO_PC;
+    }
+
+    double apparent_magnitude() {
+        return apparent_magnitude;
+    }
+
+    void set_apparent_magnitude(double magnitude) {
+        if (magnitude < MIN_APPARENT_MAGNITUDE || magnitude > MAX_APPARENT_MAGNITUDE) {
+            throw new IllegalArgumentException("Stars are assumed to have an apparent magnitude between -26.74 and 15.");
+        } else {
+            apparent_magnitude = magnitude;
+        }
     }
 
     String constellation() {
