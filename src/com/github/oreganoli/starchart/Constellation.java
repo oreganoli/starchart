@@ -2,7 +2,7 @@ package com.github.oreganoli.starchart;
 
 import java.util.ArrayList;
 
-public class Constellation {
+class Constellation {
     private static final ConstellationHandle handle = new ConstellationHandle();
     private String name;
     private ArrayList<Star> stars;
@@ -12,12 +12,12 @@ public class Constellation {
         stars = new ArrayList<>();
     }
 
-    public String getName() {
+    String getName() {
         return name;
     }
 
     void add_star(String name, double temperature, double mass, Declination declination, RightAscension ascension) {
-        stars.add(new Star(name, temperature, mass, declination, ascension, handle));
+        stars.add(new Star(this, name, temperature, mass, declination, ascension, handle));
         rename_stars();
     }
 

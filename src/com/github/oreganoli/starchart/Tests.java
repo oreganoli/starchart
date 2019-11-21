@@ -65,7 +65,8 @@ class Tests {
     @Test
     void test_catalog_naming() {
         constellation.add_star("CAT0001", valid_temp, valid_mass, valid_declination, valid_ascension);
-        constellation.add_star("CAT0002", valid_mass, valid_mass, valid_declination, valid_ascension);
+        constellation.add_star("CAT0002", valid_temp, valid_mass, valid_declination, valid_ascension);
         assertEquals(constellation.stars()[1].catalog_name(), "Beta Probātiōnis");
+        assertEquals(constellation.stars()[1].constellation(), "Probātiōnis");
     }
 }

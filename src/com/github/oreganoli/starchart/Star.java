@@ -8,16 +8,22 @@ public class Star {
     public RightAscension right_ascension;
     private String name;
     private String catalog_name;
+    private Constellation constellation;
     private double temperature;
     private Hemisphere hemisphere;
     private double mass;
 
-    Star(String name, double temperature, double mass, Declination declination, RightAscension ascension, Constellation.ConstellationHandle handle) {
+    Star(Constellation constellation, String name, double temperature, double mass, Declination declination, RightAscension ascension, Constellation.ConstellationHandle handle) {
+        this.constellation = constellation;
         set_name(name);
         set_temperature(temperature);
         set_mass(mass);
         set_declination(declination);
         this.right_ascension = ascension;
+    }
+
+    String constellation() {
+        return constellation.getName();
     }
 
     public double mass() {
@@ -31,7 +37,6 @@ public class Star {
             this.mass = mass;
         }
     }
-    private Constellation constellation;
 
     public Declination declination() {
         return declination;
