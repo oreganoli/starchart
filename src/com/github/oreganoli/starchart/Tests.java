@@ -10,23 +10,20 @@ class Tests {
     private static Declination valid_declination = new Declination(56, 3, 21);
     @Test
     void test_right_ascension() {
-        var invalid = "Attempted to create an invalid right ascension";
-        var too_big = "Attempted to create a right ascension of more than 24 hours";
         assertThrows(IllegalArgumentException.class, () -> {
             var asc = new RightAscension(25, 0, 32);
-        }, invalid);
+        });
         assertThrows(IllegalArgumentException.class, () -> {
             var asc = new RightAscension(12, 64, 32);
-        }, invalid);
+        });
         assertThrows(IllegalArgumentException.class, () -> {
             var asc = new RightAscension(0, 0, -8);
-        }, invalid);
+        });
         assertThrows(IllegalArgumentException.class, () -> {
             var asc = new RightAscension(24, 1, 2);
-        }, too_big);
-        var asc1 = new RightAscension(24, 0, 0);
-        var asc2 = new RightAscension(23, 59, 60);
-        assertEquals(asc1.toString(), asc2.toString());
+        });
+        var asc = new RightAscension(23, 59, 32);
+        assertEquals(asc.toString(), "23 h 59 m 32 s");
     }
 
     @Test
