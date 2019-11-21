@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class Tests {
+    private static Constellation constellation = new Constellation("Probātiōnis");
     @Test
     void test_right_ascension() {
         var invalid = "Attempted to create an invalid right ascension";
@@ -29,16 +30,20 @@ class Tests {
 
     @Test
     void test_star_names() {
-        var constellation = new Constellation("Test");
-        assertThrows(IllegalArgumentException.class, () -> constellation.add_star("INVALID"));
-        constellation.add_star("VAL1300");
+        assertThrows(IllegalArgumentException.class, () -> constellation.add_star("INVALID", 2000.0));
+        constellation.add_star("NAM0001", 2000.0);
+    }
+
+    @Test
+    void test_star_temperature() {
+        assertThrows(IllegalArgumentException.class, () -> constellation.add_star("TMP0001", 80.0));
+        constellation.add_star("TMP0002", 9000.0);
     }
 
     @Test
     void test_catalog_naming() {
-        var constellation = new Constellation("Test");
-        constellation.add_star("ADX0817");
-        constellation.add_star("TST1337");
-        assertEquals(constellation.stars()[1].catalog_name(), "Beta Test");
+        constellation.add_star("CAT0001", 7840.2);
+        constellation.add_star("CAT0002", 8000.0);
+        assertEquals(constellation.stars()[1].catalog_name(), "Beta Probātiōnis");
     }
 }
