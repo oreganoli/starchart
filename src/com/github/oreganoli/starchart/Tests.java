@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class Tests {
     @Test
-    void testRightAscension() {
+    void test_right_ascension() {
         var invalid = "Attempted to create an invalid right ascension";
         var too_big = "Attempted to create a right ascension of more than 24 hours";
         assertThrows(IllegalArgumentException.class, () -> {
@@ -25,5 +25,20 @@ class Tests {
         var asc1 = new RightAscension(24, 0, 0);
         var asc2 = new RightAscension(23, 59, 60);
         assertEquals(asc1.toString(), asc2.toString());
+    }
+
+    @Test
+    void test_star_names() {
+        var constellation = new Constellation("Test");
+        assertThrows(IllegalArgumentException.class, () -> constellation.add_star("INVALID"));
+        constellation.add_star("VAL1300");
+    }
+
+    @Test
+    void test_catalog_naming() {
+        var constellation = new Constellation("Test");
+        constellation.add_star("ADX0817");
+        constellation.add_star("TST1337");
+        assertEquals(constellation.stars()[1].catalog_name(), "Beta Test");
     }
 }
