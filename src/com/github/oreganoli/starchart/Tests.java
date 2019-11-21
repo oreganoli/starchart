@@ -87,9 +87,12 @@ class Tests {
 
     @Test
     void test_catalog_naming() {
+        var constellation = new Constellation("Probātiōnis");
         constellation.add_star("CAT0001", valid_temp, valid_dist, valid_mass, valid_declination, valid_ascension, valid_magnitude);
         constellation.add_star("CAT0002", valid_temp, valid_dist, valid_mass, valid_declination, valid_ascension, valid_magnitude);
         assertEquals(constellation.stars()[1].catalog_name(), "Beta Probātiōnis");
         assertEquals(constellation.stars()[1].constellation(), "Probātiōnis");
+        constellation.remove_star("CAT0001");
+        assertEquals(constellation.stars()[0].name(), "CAT0002");
     }
 }

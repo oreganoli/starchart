@@ -21,6 +21,15 @@ class Constellation {
         rename_stars();
     }
 
+    void remove_star(String name) {
+        for (int i = 0; i < stars.size(); i++) {
+            if (stars.get(i).name() == name) {
+                stars.remove(i);
+            }
+        }
+        rename_stars();
+    }
+
     Star[] stars() {
         var arr = new Star[stars.size()];
         return stars.toArray(arr);
