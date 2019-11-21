@@ -10,13 +10,16 @@ public class Star {
     private String catalog_name;
     private Constellation constellation;
     private double temperature;
+    // Distance from the Earth, measured in light years.
+    private double distance;
     private Hemisphere hemisphere;
     private double mass;
 
-    Star(Constellation constellation, String name, double temperature, double mass, Declination declination, RightAscension ascension, Constellation.ConstellationHandle handle) {
+    Star(Constellation constellation, String name, double temperature, double distance, double mass, Declination declination, RightAscension ascension, Constellation.ConstellationHandle handle) {
         this.constellation = constellation;
         set_name(name);
         set_temperature(temperature);
+        set_distance(distance);
         set_mass(mass);
         set_declination(declination);
         this.right_ascension = ascension;
@@ -26,11 +29,23 @@ public class Star {
         return constellation.getName();
     }
 
+    public double distance() {
+        return distance;
+    }
+
+    void set_distance(double distance) {
+        if (distance <= 0) {
+            throw new IllegalArgumentException("A star must be at least some distance away from the observer.");
+        } else {
+            this.distance = distance;
+        }
+    }
+
     public double mass() {
         return mass;
     }
 
-    public void set_mass(double mass) {
+    void set_mass(double mass) {
         if (mass < MIN_MASS || mass > MAX_MASS) {
             throw new IllegalArgumentException("Stars are assumed to have a mass between one-tenth that of the Sun to fifty times that of the Sun.");
         } else {
@@ -41,7 +56,8 @@ public class Star {
     public Declination declination() {
         return declination;
     }
-    public void set_declination(Declination declination) {
+
+    void set_declination(Declination declination) {
         this.declination = declination;
         this.hemisphere = this.declination.hemisphere();
     }
