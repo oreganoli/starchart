@@ -1,5 +1,7 @@
-package com.github.oreganoli.starchart;
-
+import com.github.oreganoli.starchart.Constellation;
+import com.github.oreganoli.starchart.Declination;
+import com.github.oreganoli.starchart.RightAscension;
+import com.github.oreganoli.starchart.Star;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -57,15 +59,17 @@ class Tests {
     @Test
     void test_absolute_magnitude() {
         var constellation = new Constellation("Orionis");
-        constellation.add_star("ADS3823", 11826.85, 860.0, 21, new Declination(-8, 12, 14), new RightAscension(05, 14, 32), 0.12);
+        constellation.add_star("ADS3823", 11826.85, 860.0, 21, new Declination(-8, 12, 14), new RightAscension(5, 14, 32), 0.12);
         assertEquals(Math.round(constellation.stars()[0].absolute_magnitude()), -7.0);
     }
+
     @Test
     void test_star_distance() {
         assertThrows(IllegalArgumentException.class, () -> constellation.add_star("DST0001", valid_temp, 0.0, valid_mass, valid_declination, valid_ascension, valid_magnitude));
         assertThrows(IllegalArgumentException.class, () -> constellation.add_star("DST0002", valid_temp, -90.0, valid_mass, valid_declination, valid_ascension, valid_magnitude));
         constellation.add_star("DST0003", valid_temp, valid_dist, valid_mass, valid_declination, valid_ascension, valid_magnitude);
     }
+
     @Test
     void test_star_mass() {
         assertThrows(IllegalArgumentException.class, () -> constellation.add_star("MSS0001", valid_temp, valid_dist, 0.05, valid_declination, valid_ascension, valid_magnitude));

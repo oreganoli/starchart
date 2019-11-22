@@ -1,13 +1,13 @@
 package com.github.oreganoli.starchart;
 
-class Declination {
+public class Declination {
     private static int MAX_DEGREES = 90;
     private static int MAX_MINSEC = 59;
     private int degrees;
     private int minutes;
     private int seconds;
 
-    Declination(int degrees, int minutes, int seconds) {
+    public Declination(int degrees, int minutes, int seconds) {
         if (Math.abs(degrees) > MAX_DEGREES || (Math.abs(degrees) == MAX_DEGREES && (minutes > 0 || seconds > 0))) {
             throw new IllegalArgumentException("A star's declination can be at most 90 degrees either north or south.");
         } else if (minutes < 0 || minutes > MAX_MINSEC || seconds < 0 || seconds > MAX_MINSEC) {
@@ -23,7 +23,7 @@ class Declination {
         return String.format("%02d°%02d\'%02d\"", degrees, minutes, seconds);
     }
 
-    Star.Hemisphere hemisphere() {
+    public Star.Hemisphere hemisphere() {
         if (degrees == 0) {
             if (minutes > 0 || seconds > 0) {
                 return Star.Hemisphere.Northern;

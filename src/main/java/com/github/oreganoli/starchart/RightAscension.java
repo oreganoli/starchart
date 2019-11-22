@@ -8,7 +8,7 @@ public class RightAscension {
     private int minutes;
     private int seconds;
 
-    RightAscension(int hours, int minutes, int seconds) {
+    public RightAscension(int hours, int minutes, int seconds) {
         if (
                 hours < 0 || hours > MAX_HOURS ||
                         minutes < 0 || minutes > MAX_MINSEC ||

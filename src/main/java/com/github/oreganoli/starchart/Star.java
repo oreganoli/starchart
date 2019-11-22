@@ -7,8 +7,18 @@ public class Star {
     private static final double MIN_MASS = 0.1;
     private static final double MAX_MASS = 50.0;
     private static final double MAX_APPARENT_MAGNITUDE = 15.00;
+    public RightAscension right_ascension;
     private double apparent_magnitude;
     private double absolute_magnitude;
+    private Declination declination;
+    private String name;
+    private String catalog_name;
+    private Constellation constellation;
+    private double temperature;
+    // Distance from the Earth, measured in light years.
+    private double distance;
+    private Hemisphere hemisphere;
+    private double mass;
 
     Star(Constellation constellation, String name, double temperature, double distance, double mass, Declination declination, RightAscension ascension, double apparent_magnitude, Constellation.ConstellationHandle handle) {
         this.constellation = constellation;
@@ -21,26 +31,16 @@ public class Star {
         this.right_ascension = ascension;
     }
 
+    public static double ly_to_pc(double ly) {
+        return ly / LY_TO_PC;
+    }
+
     private void calculate_absolute_magnitude() {
         absolute_magnitude = apparent_magnitude - 5 * Math.log10(ly_to_pc(distance)) + 5;
     }
 
-    double absolute_magnitude() {
+    public double absolute_magnitude() {
         return absolute_magnitude;
-    }
-    private Declination declination;
-    public RightAscension right_ascension;
-    private String name;
-    private String catalog_name;
-    private Constellation constellation;
-    private double temperature;
-    // Distance from the Earth, measured in light years.
-    private double distance;
-    private Hemisphere hemisphere;
-    private double mass;
-
-    public static double ly_to_pc(double ly) {
-        return ly / LY_TO_PC;
     }
 
     double apparent_magnitude() {
@@ -56,7 +56,7 @@ public class Star {
         }
     }
 
-    String constellation() {
+    public String constellation() {
         return constellation.getName();
     }
 
@@ -102,14 +102,8 @@ public class Star {
         return name;
     }
 
-    String catalog_name() {
+    public String catalog_name() {
         return catalog_name;
-    }
-
-    public enum Hemisphere {
-        Northern,
-        Southern,
-        Equatorial
     }
 
     public double temperature() {
@@ -135,5 +129,11 @@ public class Star {
 
     void set_catalog_name(String name, Constellation.ConstellationHandle handle) {
         this.catalog_name = name;
+    }
+
+    public enum Hemisphere {
+        Northern,
+        Southern,
+        Equatorial
     }
 }
