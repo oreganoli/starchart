@@ -43,7 +43,7 @@ class Tests {
         var valid2 = new Declination(0, 0, 0);
         var valid3 = new Declination(0, 0, 43);
         assertEquals(valid1.hemisphere(), Star.Hemisphere.Southern);
-        assertEquals(valid1.toString(), "-89°23\'12\"");
+        assertEquals(valid1.toString(), "-89°23'12\"");
         assertEquals(valid2.hemisphere(), Star.Hemisphere.Equatorial);
         assertEquals(valid3.hemisphere(), Star.Hemisphere.Northern);
     }
