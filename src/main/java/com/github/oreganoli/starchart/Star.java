@@ -122,7 +122,7 @@ public class Star {
         }
     }
 
-    void set_catalog_name(String name, Constellation.ConstellationHandle handle) {
+    void set_catalog_name(String name) {
         this.catalog_name = name;
     }
 
