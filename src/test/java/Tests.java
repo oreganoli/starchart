@@ -47,21 +47,18 @@ class Tests {
         assertEquals(valid2.hemisphere(), Star.Hemisphere.Equatorial);
         assertEquals(valid3.hemisphere(), Star.Hemisphere.Northern);
     }
-//
-//
-//    @Test
-//    void test_apparent_magnitude() {
-//        assertThrows(IllegalArgumentException.class, () -> constellation.add_star("MAG0001", valid_temp, valid_dist, valid_mass, valid_declination, valid_ascension, -424.2));
-//        assertThrows(IllegalArgumentException.class, () -> constellation.add_star("MAG0002", valid_temp, valid_dist, valid_mass, valid_declination, valid_ascension, 24));
-//        constellation.add_star("MAG0003", valid_temp, valid_dist, valid_mass, valid_declination, valid_ascension, valid_magnitude);
-//    }
-//
-//    @Test
-//    void test_absolute_magnitude() {
-//        var constellation = new Constellation("Orionis");
-//        constellation.add_star("ADS3823", 11826.85, 860.0, 21, new Declination(-8, 12, 14), new RightAscension(5, 14, 32), 0.12);
-//        assertEquals(Math.round(constellation.stars()[0].absolute_magnitude()), -7.0);
-//    }
+
+    @Test
+    void test_apparent_magnitude() {
+        assertThrows(IllegalArgumentException.class, () -> new Star(null, "MAG0001", "of the Test", null, valid_temp, valid_dist, valid_mass, valid_declination, valid_ascension, -424.2));
+        assertThrows(IllegalArgumentException.class, () -> new Star(null, "MAG0002", "of the Test", null, valid_temp, valid_dist, valid_mass, valid_declination, valid_ascension, 24));
+    }
+
+    @Test
+    void test_absolute_magnitude() {
+        var rigel = new Star(null, "ADS3823", "Orionis", "Beta Orionis", 11826.85, 860.0, 21, new Declination(-8, 12, 14), new RightAscension(5, 14, 32), 0.12);
+        assertEquals(-7.0, Math.round(rigel.absolute_magnitude));
+    }
 //
 //    @Test
 //    void test_star_distance() {

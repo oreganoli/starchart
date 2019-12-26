@@ -8,8 +8,8 @@ public class Star {
     String name;
     // What constellation the star belongs to. It is recommended to use the genitive case of the constellation's Latin name.
     String constellation;
-    // The Bayer designation of the star within its constellation using a Greek letter, for example "Alpha Ceti" for the brightest star in the Cetus constellation.
-    String catalog_name;
+    // Calculated based on the apparent magnitude and distance.
+    public double absolute_magnitude;
     // The north-south coordinate on the celestial sphere, measured in degrees, ranging from -90° to 90°
     Declination declination;
     // The east-west coordinate, measured in hours, ranging from 0 to 24 hours.
@@ -18,8 +18,9 @@ public class Star {
     Hemisphere hemisphere;
     // How bright the star appears to be from Earth.
     double apparent_magnitude;
-    // Calculated based on the apparent magnitude and distance.
-    double absolute_magnitude;
+    // The Bayer designation of the star within its constellation using a Greek letter, for example "Alpha Ceti" for the brightest star in the Cetus constellation.
+    // This is ignored on inserts and updates, like "id".
+    String catalog_name;
     // Temperature in degrees centigrade.
     double temperature;
     // Distance from the Solar System, measured in light years.
@@ -27,7 +28,7 @@ public class Star {
     // Mass relative to the Sun.
     private double mass;
 
-    Star(Integer id, String name, String constellation, String catalog_name, double temperature, double distance, double mass, Declination declination, RightAscension ascension, double apparent_magnitude) {
+    public Star(Integer id, String name, String constellation, String catalog_name, double temperature, double distance, double mass, Declination declination, RightAscension ascension, double apparent_magnitude) {
         this.id = id;
         set_name(name);
         this.constellation = constellation;
