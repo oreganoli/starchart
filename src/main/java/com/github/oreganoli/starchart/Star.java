@@ -2,44 +2,51 @@ package com.github.oreganoli.starchart;
 import static com.github.oreganoli.starchart.Constants.*;
 
 public class Star {
-    public RightAscension right_ascension;
-    private double apparent_magnitude;
-    private double absolute_magnitude;
-    private Declination declination;
-    private String name;
-    private String catalog_name;
-    private Constellation constellation;
-    private double temperature;
-    // Distance from the Earth, measured in light years.
+    // The primary key in the corresponding DB table - left null when inserting a new star.
+    Integer id;
+    // The astronomical name of the star.
+    String name;
+    // What constellation the star belongs to. It is recommended to use the genitive case of the constellation's Latin name.
+    String constellation;
+    // The Bayer designation of the star within its constellation using a Greek letter, for example "Alpha Ceti" for the brightest star in the Cetus constellation.
+    String catalog_name;
+    // The north-south coordinate on the celestial sphere, measured in degrees, ranging from -90° to 90°
+    Declination declination;
+    // The east-west coordinate, measured in hours, ranging from 0 to 24 hours.
+    RightAscension right_ascension;
+    // Calculated based on the declination.
+    Hemisphere hemisphere;
+    // How bright the star appears to be from Earth.
+    double apparent_magnitude;
+    // Calculated based on the apparent magnitude and distance.
+    double absolute_magnitude;
+    // Temperature in degrees centigrade.
+    double temperature;
+    // Distance from the Solar System, measured in light years.
     private double distance;
-    private Hemisphere hemisphere;
+    // Mass relative to the Sun.
     private double mass;
 
-    Star(Constellation constellation, String name, double temperature, double distance, double mass, Declination declination, RightAscension ascension, double apparent_magnitude, Constellation.ConstellationHandle handle) {
-        this.constellation = constellation;
+    Star(Integer id, String name, String constellation, String catalog_name, double temperature, double distance, double mass, Declination declination, RightAscension ascension, double apparent_magnitude) {
+        this.id = id;
         set_name(name);
+        this.constellation = constellation;
+        this.catalog_name = catalog_name;
         set_temperature(temperature);
         set_distance(distance);
-        set_apparent_magnitude(apparent_magnitude);
         set_mass(mass);
         set_declination(declination);
         this.right_ascension = ascension;
+        set_apparent_magnitude(apparent_magnitude);
     }
 
+    // Helper method for converting light years to parsecs.
     public static double ly_to_pc(double ly) {
         return ly / LY_TO_PC;
     }
 
     private void calculate_absolute_magnitude() {
         absolute_magnitude = apparent_magnitude - 5 * Math.log10(ly_to_pc(distance)) + 5;
-    }
-
-    public double absolute_magnitude() {
-        return absolute_magnitude;
-    }
-
-    double apparent_magnitude() {
-        return apparent_magnitude;
     }
 
     void set_apparent_magnitude(double magnitude) {
@@ -50,15 +57,6 @@ public class Star {
             calculate_absolute_magnitude();
         }
     }
-
-    public String constellation() {
-        return constellation.getName();
-    }
-
-    public double distance() {
-        return distance;
-    }
-
     void set_distance(double distance) {
         if (distance <= 0) {
             throw new IllegalArgumentException("A star must be at least some distance away from the observer.");
@@ -67,11 +65,6 @@ public class Star {
             calculate_absolute_magnitude();
         }
     }
-
-    public double mass() {
-        return mass;
-    }
-
     void set_mass(double mass) {
         if (mass < MIN_MASS || mass > MAX_MASS) {
             throw new IllegalArgumentException("Stars are assumed to have a mass between one-tenth that of the Sun to fifty times that of the Sun.");
@@ -80,29 +73,9 @@ public class Star {
         }
     }
 
-    public Declination declination() {
-        return declination;
-    }
-
     void set_declination(Declination declination) {
         this.declination = declination;
         this.hemisphere = this.declination.hemisphere();
-    }
-
-    public Hemisphere hemisphere() {
-        return hemisphere;
-    }
-
-    public String name() {
-        return name;
-    }
-
-    public String catalog_name() {
-        return catalog_name;
-    }
-
-    public double temperature() {
-        return temperature;
     }
 
     public void set_temperature(double temperature) {
@@ -120,10 +93,6 @@ public class Star {
         } else {
             throw new IllegalArgumentException("Star names must be 3 Latin letters followed by 4 digits.");
         }
-    }
-
-    void set_catalog_name(String name) {
-        this.catalog_name = name;
     }
 
     public enum Hemisphere {
