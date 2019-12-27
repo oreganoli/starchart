@@ -18,10 +18,10 @@ public class StarRepository {
         if (dbUrl == null) {
             throw new Exception("The STARCHART_DB_URL environment variable must be set.");
         }
-        System.err.println("Acquired database URL...");
+        System.out.println("Acquired database URL...");
         var config = new HikariConfig();
         config.setJdbcUrl(dbUrl);
-        System.err.println("Created a Hikari config.");
+        System.out.println("Created a Hikari config.");
         source = new HikariDataSource(config);
         initialize();
     }
