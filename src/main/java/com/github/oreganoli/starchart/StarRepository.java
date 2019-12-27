@@ -109,4 +109,13 @@ public class StarRepository {
         }
         rename_stars();
     }
+
+    public void delete(int id) throws Exception {
+        var stmt = conn.prepareStatement("""
+                DELETE FROM stars WHERE id = ?;
+                """);
+        stmt.setInt(1, id);
+        stmt.execute();
+        rename_stars();
+    }
 }
