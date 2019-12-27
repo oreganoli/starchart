@@ -2,6 +2,7 @@ package com.github.oreganoli.starchart;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 @SuppressWarnings("DuplicatedCode")
 public class StarRepository {
@@ -67,6 +68,34 @@ public class StarRepository {
         ins.setDouble(11, star.temperature);
         ins.setDouble(12, star.mass);
         ins.execute();
+    }
+
+    private Star[] read_all() throws Exception {
+        var read_stmt = conn.prepareStatement("""
+                SELECT
+                id, name, constellation, catalog_name,
+                decl_degs, decl_mins, decl_secs,
+                ra_hrs, ra_mins, ra_secs,
+                distance_ly, apparent_magnitude, temperature_c, mass
+                FROM stars;
+                """);
+        var list = new ArrayList<Star>();
+        var rs = read_stmt.executeQuery();
+        while (rs.next()) {
+            list.add(new Star(
+                    rs.getInt(1),
+                    rs.getString(2),
+                    rs.getString(3),
+                    rs.getString(4),
+                    rs.getDouble(13),
+                    rs.getDouble(11),
+                    rs.getDouble(14),
+                    new Declination(rs.getInt(5), rs.getInt(6), rs.getInt(7)),
+                    new RightAscension(rs.getInt(8), rs.getInt(9), rs.getInt(10)),
+                    rs.getDouble(12)
+            ));
+        }
+        return (Star[]) list.toArray();
     }
 
     private void update(Star star) throws Exception {
