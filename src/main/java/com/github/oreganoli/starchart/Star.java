@@ -41,6 +41,24 @@ public class Star {
         set_apparent_magnitude(apparent_magnitude);
     }
 
+    @Override
+    public String toString() {
+        return "Star{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", constellation='" + constellation + '\'' +
+                ", absolute_magnitude=" + absolute_magnitude +
+                ", declination=" + declination +
+                ", right_ascension=" + right_ascension +
+                ", hemisphere=" + hemisphere +
+                ", apparent_magnitude=" + apparent_magnitude +
+                ", catalog_name='" + catalog_name + '\'' +
+                ", temperature=" + temperature +
+                ", distance=" + distance +
+                ", mass=" + mass +
+                '}';
+    }
+
     // Helper method for converting light years to parsecs.
     public static double ly_to_pc(double ly) {
         return ly / LY_TO_PC;
