@@ -46,6 +46,11 @@ public class StarRepository {
     }
 
     private void create(Star star) throws Exception {
+        var unq = conn.prepareStatement("SELECT EXISTS (SELECT id FROM stars WHERE name = ?);");
+        unq.setString(1, star.name);
+        if (unq.executeQuery().getBoolean(1)) {
+            throw new IllegalArgumentException("This name is already taken by another star.");
+        }
         var ins = conn.prepareStatement("""
                 INSERT INTO stars
                 (name, constellation, decl_degs, decl_mins, decl_secs, ra_hrs, ra_mins, ra_secs, distance_ly, apparent_magnitude, temperature_c, mass)
