@@ -1,7 +1,11 @@
 package com.github.oreganoli.starchart;
 
+import com.blade.kit.json.JsonIgnore;
+
 public class Declination {
+    @JsonIgnore
     private static int MAX_DEGREES = 90;
+    @JsonIgnore
     private static int MAX_MINSEC = 59;
     public int degrees;
     public int minutes;

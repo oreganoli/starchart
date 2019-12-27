@@ -1,7 +1,11 @@
 package com.github.oreganoli.starchart;
 
+import com.blade.kit.json.JsonIgnore;
+
 public class RightAscension {
+    @JsonIgnore
     private static final int MAX_HOURS = 24;
+    @JsonIgnore
     private static final int MAX_MINSEC = 59;
 
     public int hours;
