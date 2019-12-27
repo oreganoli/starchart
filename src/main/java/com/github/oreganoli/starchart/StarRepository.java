@@ -3,6 +3,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 @SuppressWarnings("DuplicatedCode")
 public class StarRepository {
@@ -42,10 +43,6 @@ public class StarRepository {
                     );
                 """);
         initStatement.execute();
-    }
-
-    private void rename_stars() throws Exception {
-        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     private void create(Star star) throws Exception {
@@ -146,5 +143,30 @@ public class StarRepository {
         stmt.setInt(1, id);
         stmt.execute();
         rename_stars();
+    }
+
+    public void rename_stars() throws Exception {
+        var map = new HashMap<String, ArrayList<Integer>>();
+        var consts_rs = conn.prepareStatement("SELECT DISTINCT constellation FROM stars;").executeQuery();
+        while (consts_rs.next()) {
+            map.put(consts_rs.getString(1), new ArrayList<>());
+        }
+        var read_rs = conn.prepareStatement("""
+                SELECT id, constellation
+                FROM stars
+                ORDER BY apparent_magnitude;
+                """).executeQuery();
+        while (read_rs.next()) {
+            map.get(read_rs.getString(2)).add(read_rs.getInt(1));
+        }
+        var set_stmt = conn.prepareStatement("UPDATE stars SET catalog_name = ? WHERE id = ?;");
+        for (String x : map.keySet()) {
+            var len = map.get(x).size();
+            for (int i = 0; i < len; i++) {
+                set_stmt.setString(1, Bayer.designation(i, x));
+                set_stmt.setInt(2, map.get(x).get(i));
+                set_stmt.execute();
+            }
+        }
     }
 }
