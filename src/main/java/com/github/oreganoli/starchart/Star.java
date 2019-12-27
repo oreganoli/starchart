@@ -59,13 +59,13 @@ public class Star {
                 '}';
     }
 
-    // Helper method for converting light years to parsecs.
-    public static double ly_to_pc(double ly) {
-        return ly / LY_TO_PC;
+    // Helper method for converting parsecs to light years.
+    public static double pc_to_ly(double pc) {
+        return pc * LY_TO_PC;
     }
 
     private void calculate_absolute_magnitude() {
-        absolute_magnitude = apparent_magnitude - 5 * Math.log10(ly_to_pc(distance)) + 5;
+        absolute_magnitude = apparent_magnitude - 5 * Math.log10(pc_to_ly(distance)) + 5;
     }
 
     void set_apparent_magnitude(double magnitude) {

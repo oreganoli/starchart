@@ -4,6 +4,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 @SuppressWarnings("DuplicatedCode")
 public class StarRepository {
@@ -48,7 +49,8 @@ public class StarRepository {
     private void create(Star star) throws Exception {
         var unq = conn.prepareStatement("SELECT EXISTS (SELECT id FROM stars WHERE name = ?);");
         unq.setString(1, star.name);
-        if (unq.executeQuery().getBoolean(1)) {
+        var urs = unq.executeQuery();
+        if (urs.next() && urs.getBoolean(1)) {
             throw new IllegalArgumentException("This name is already taken by another star.");
         }
         var ins = conn.prepareStatement("""
@@ -72,7 +74,7 @@ public class StarRepository {
         ins.execute();
     }
 
-    ArrayList<Star> read_all() throws Exception {
+    public ArrayList<Star> read_all() throws Exception {
         var read_stmt = conn.prepareStatement("""
                 SELECT
                 id, name, constellation, catalog_name,
@@ -174,5 +176,81 @@ public class StarRepository {
                 set_stmt.execute();
             }
         }
+    }
+
+    public ArrayList<Star> search(Criteria criteria) throws Exception {
+        if (criteria == null) {
+            return read_all();
+        }
+        var query = conn.prepareStatement("""
+                SELECT
+                id, name, constellation, catalog_name,
+                decl_degs, decl_mins, decl_secs,
+                ra_hrs, ra_mins, ra_secs,
+                distance_ly, apparent_magnitude, temperature_c, mass
+                FROM stars
+                WHERE
+                constellation LIKE ? AND
+                distance_ly BETWEEN ? AND ? AND
+                temperature_c BETWEEN ? AND ? AND
+                apparent_magnitude BETWEEN ? AND ? AND
+                mass BETWEEN ? AND ?
+                ORDER BY id;
+                """);
+        query.setString(1, Objects.requireNonNullElse(criteria.constellation, "%"));
+        if (criteria.distance_parsecs != null) {
+            query.setDouble(2, Star.pc_to_ly(criteria.distance_parsecs.min));
+            query.setDouble(3, Star.pc_to_ly(criteria.distance_parsecs.max));
+        } else {
+            query.setDouble(2, 0);
+            query.setDouble(3, Double.MAX_VALUE);
+        }
+        if (criteria.temperature != null) {
+            query.setDouble(4, criteria.temperature.min);
+            query.setDouble(5, criteria.temperature.max);
+        } else {
+            query.setDouble(4, Constants.MIN_TEMPERATURE);
+            query.setDouble(5, Double.MAX_VALUE);
+        }
+        if (criteria.apparent_magnitude != null) {
+            query.setDouble(6, criteria.apparent_magnitude.min);
+            query.setDouble(7, criteria.apparent_magnitude.max);
+        } else {
+            query.setDouble(6, Constants.MIN_APPARENT_MAGNITUDE);
+            query.setDouble(7, Constants.MAX_APPARENT_MAGNITUDE);
+        }
+        if (criteria.potential_supernovae != null) {
+            if (criteria.potential_supernovae) {
+                query.setDouble(8, Constants.CHANDRASEKHAR_LIMIT);
+                query.setDouble(9, Constants.MAX_MASS);
+            } else {
+                query.setDouble(8, Constants.MIN_MASS);
+                query.setDouble(9, Constants.CHANDRASEKHAR_LIMIT);
+                // We conveniently assume here that stars right on the Chandrasekhar limit could be potential supernovae or not. This lets us do our "clever" BETWEEN trick in the SQL query.
+            }
+        } else {
+            query.setDouble(8, Constants.MIN_MASS);
+            query.setDouble(9, Constants.MAX_MASS);
+        }
+        var list = new ArrayList<Star>();
+        var rs = query.executeQuery();
+        while (rs.next()) {
+            list.add(new Star(
+                    rs.getInt(1),
+                    rs.getString(2),
+                    rs.getString(3),
+                    rs.getString(4),
+                    rs.getDouble(13),
+                    rs.getDouble(11),
+                    rs.getDouble(14),
+                    new Declination(rs.getInt(5), rs.getInt(6), rs.getInt(7)),
+                    new RightAscension(rs.getInt(8), rs.getInt(9), rs.getInt(10)),
+                    rs.getDouble(12)
+            ));
+        }
+        if (criteria.hemisphere != null) {
+            list.removeIf((x) -> x.declination.hemisphere() != criteria.hemisphere);
+        }
+        return list;
     }
 }
