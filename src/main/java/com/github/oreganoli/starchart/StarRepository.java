@@ -21,6 +21,8 @@ public class StarRepository {
         System.out.println("Acquired database URL...");
         var config = new HikariConfig();
         config.setJdbcUrl(dbUrl);
+        config.setMaximumPoolSize(20);
+        config.setMinimumIdle(10);
         System.out.println("Created a Hikari config.");
         source = new HikariDataSource(config);
         initialize();
@@ -53,13 +55,14 @@ public class StarRepository {
     }
 
     private void create(Star star) throws Exception {
-        var unq = conn().prepareStatement("SELECT EXISTS (SELECT id FROM stars WHERE name = ?);");
+        var conn = conn();
+        var unq = conn.prepareStatement("SELECT EXISTS (SELECT id FROM stars WHERE name = ?);");
         unq.setString(1, star.name);
         var urs = unq.executeQuery();
         if (urs.next() && urs.getBoolean(1)) {
             throw new IllegalArgumentException("This name is already taken by another star.");
         }
-        var ins = conn().prepareStatement("""
+        var ins = conn.prepareStatement("""
                 INSERT INTO stars
                 (name, constellation, decl_degs, decl_mins, decl_secs, ra_hrs, ra_mins, ra_secs, distance_ly, apparent_magnitude, temperature_c, mass)
                 VALUES
@@ -78,10 +81,12 @@ public class StarRepository {
         ins.setDouble(11, star.temperature);
         ins.setDouble(12, star.mass);
         ins.execute();
+        conn.close();
     }
 
     public Star read(int id) throws Exception {
-        var stmt = conn().prepareStatement("""
+        var conn = conn();
+        var stmt = conn.prepareStatement("""
                 SELECT
                 id, name, constellation, catalog_name,
                 decl_degs, decl_mins, decl_secs,
@@ -92,6 +97,7 @@ public class StarRepository {
         stmt.setInt(1, id);
         var rs = stmt.executeQuery();
         if (rs.next()) {
+            conn.close();
             return new Star(
                     rs.getInt(1),
                     rs.getString(2),
@@ -104,12 +110,14 @@ public class StarRepository {
                     new RightAscension(rs.getInt(8), rs.getInt(9), rs.getInt(10)),
                     rs.getDouble(12));
         } else {
+            conn.close();
             return null;
         }
     }
 
     public ArrayList<Star> read_all() throws Exception {
-        var read_stmt = conn().prepareStatement("""
+        var conn = conn();
+        var read_stmt = conn.prepareStatement("""
                 SELECT
                 id, name, constellation, catalog_name,
                 decl_degs, decl_mins, decl_secs,
@@ -134,11 +142,13 @@ public class StarRepository {
                     rs.getDouble(12)
             ));
         }
+        conn.close();
         return list;
     }
 
     private void update(Star star) throws Exception {
-        var ins = conn().prepareStatement("""
+        var conn = conn();
+        var ins = conn.prepareStatement("""
                 UPDATE stars SET
                 name = ?,
                 constellation = ?,
@@ -181,21 +191,24 @@ public class StarRepository {
     }
 
     public void delete(int id) throws Exception {
-        var stmt = conn().prepareStatement("""
+        var conn = conn();
+        var stmt = conn.prepareStatement("""
                 DELETE FROM stars WHERE id = ?;
                 """);
         stmt.setInt(1, id);
         stmt.execute();
         rename_stars();
+        conn.close();
     }
 
     public void rename_stars() throws Exception {
         var map = new HashMap<String, ArrayList<Integer>>();
-        var consts_rs = conn().prepareStatement("SELECT DISTINCT constellation FROM stars;").executeQuery();
+        var conn = conn();
+        var consts_rs = conn.prepareStatement("SELECT DISTINCT constellation FROM stars;").executeQuery();
         while (consts_rs.next()) {
             map.put(consts_rs.getString(1), new ArrayList<>());
         }
-        var read_rs = conn().prepareStatement("""
+        var read_rs = conn.prepareStatement("""
                 SELECT id, constellation
                 FROM stars
                 ORDER BY apparent_magnitude;
@@ -203,7 +216,7 @@ public class StarRepository {
         while (read_rs.next()) {
             map.get(read_rs.getString(2)).add(read_rs.getInt(1));
         }
-        var set_stmt = conn().prepareStatement("UPDATE stars SET catalog_name = ? WHERE id = ?;");
+        var set_stmt = conn.prepareStatement("UPDATE stars SET catalog_name = ? WHERE id = ?;");
         for (String x : map.keySet()) {
             var len = map.get(x).size();
             for (int i = 0; i < len; i++) {
@@ -212,13 +225,15 @@ public class StarRepository {
                 set_stmt.execute();
             }
         }
+        conn.close();
     }
 
     public ArrayList<Star> search(Criteria criteria) throws Exception {
         if (criteria == null) {
             return read_all();
         }
-        var query = conn().prepareStatement("""
+        var conn = conn();
+        var query = conn.prepareStatement("""
                 SELECT
                 id, name, constellation, catalog_name,
                 decl_degs, decl_mins, decl_secs,
@@ -290,6 +305,7 @@ public class StarRepository {
         if (criteria.hemisphere != null) {
             list.removeIf((x) -> x.declination.hemisphere() != criteria.hemisphere);
         }
+        conn.close();
         return list;
     }
 }
