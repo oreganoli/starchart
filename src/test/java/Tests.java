@@ -22,6 +22,7 @@ class Tests {
         assertThrows(IllegalArgumentException.class, () -> new RightAscension(0, 0, -8));
         assertThrows(IllegalArgumentException.class, () -> new RightAscension(24, 1, 2));
         assertEquals("23 h 59 m 32 s", valid_ascension.toString());
+        assertEquals("24 h 00 m 00 s", new RightAscension(24, 0, 0).toString());
     }
 
     @Test
