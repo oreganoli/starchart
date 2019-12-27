@@ -74,6 +74,34 @@ public class StarRepository {
         ins.execute();
     }
 
+    public Star read(int id) throws Exception {
+        var stmt = conn.prepareStatement("""
+                SELECT
+                id, name, constellation, catalog_name,
+                decl_degs, decl_mins, decl_secs,
+                ra_hrs, ra_mins, ra_secs,
+                distance_ly, apparent_magnitude, temperature_c, mass
+                FROM stars
+                WHERE id = ?;""");
+        stmt.setInt(1, id);
+        var rs = stmt.executeQuery();
+        if (rs.next()) {
+            return new Star(
+                    rs.getInt(1),
+                    rs.getString(2),
+                    rs.getString(3),
+                    rs.getString(4),
+                    rs.getDouble(13),
+                    rs.getDouble(11),
+                    rs.getDouble(14),
+                    new Declination(rs.getInt(5), rs.getInt(6), rs.getInt(7)),
+                    new RightAscension(rs.getInt(8), rs.getInt(9), rs.getInt(10)),
+                    rs.getDouble(12));
+        } else {
+            return null;
+        }
+    }
+
     public ArrayList<Star> read_all() throws Exception {
         var read_stmt = conn.prepareStatement("""
                 SELECT
@@ -197,6 +225,9 @@ public class StarRepository {
                 mass BETWEEN ? AND ?
                 ORDER BY id;
                 """);
+        // If a particular criterion is null and thus irrelevant, then the sides of the BETWEEN clause are filled with the minimum and maximum legal values, making it meaningless.
+        // This lets us avoid dynamically composing the query.
+        // Unfortunately, filtering by hemisphere has to be done after retrieving the data, as it isn't an atomic scalar value we could do this with.
         query.setString(1, Objects.requireNonNullElse(criteria.constellation, "%"));
         if (criteria.distance_parsecs != null) {
             query.setDouble(2, Star.pc_to_ly(criteria.distance_parsecs.min));
