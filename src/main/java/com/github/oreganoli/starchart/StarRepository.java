@@ -1,31 +1,37 @@
 package com.github.oreganoli.starchart;
+
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
+
 @SuppressWarnings("DuplicatedCode")
 public class StarRepository {
-    Connection conn;
-
+    HikariDataSource source;
     public StarRepository() throws Exception {
         var dbUrl = System.getenv("STARCHART_DB_URL");
         if (dbUrl == null) {
             throw new Exception("The STARCHART_DB_URL environment variable must be set.");
         }
-        Connection conn = null;
-        try {
-            conn = DriverManager.getConnection(dbUrl);
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-        }
-        this.conn = conn;
+        System.err.println("Acquired database URL...");
+        var config = new HikariConfig();
+        config.setJdbcUrl(dbUrl);
+        System.err.println("Created a Hikari config.");
+        source = new HikariDataSource(config);
+        initialize();
+    }
+
+    private Connection conn() throws SQLException {
+        return source.getConnection();
     }
 
     public void initialize() throws Exception {
-        var initStatement = conn.prepareStatement("""
+        var initStatement = conn().prepareStatement("""
                     CREATE TABLE IF NOT EXISTS stars (
                         id SERIAL PRIMARY KEY,
                         name VARCHAR(7) NOT NULL UNIQUE CHECK (name ~ '[A-Z]{3}[0-9]{4}'),
@@ -47,13 +53,13 @@ public class StarRepository {
     }
 
     private void create(Star star) throws Exception {
-        var unq = conn.prepareStatement("SELECT EXISTS (SELECT id FROM stars WHERE name = ?);");
+        var unq = conn().prepareStatement("SELECT EXISTS (SELECT id FROM stars WHERE name = ?);");
         unq.setString(1, star.name);
         var urs = unq.executeQuery();
         if (urs.next() && urs.getBoolean(1)) {
             throw new IllegalArgumentException("This name is already taken by another star.");
         }
-        var ins = conn.prepareStatement("""
+        var ins = conn().prepareStatement("""
                 INSERT INTO stars
                 (name, constellation, decl_degs, decl_mins, decl_secs, ra_hrs, ra_mins, ra_secs, distance_ly, apparent_magnitude, temperature_c, mass)
                 VALUES
@@ -75,7 +81,7 @@ public class StarRepository {
     }
 
     public Star read(int id) throws Exception {
-        var stmt = conn.prepareStatement("""
+        var stmt = conn().prepareStatement("""
                 SELECT
                 id, name, constellation, catalog_name,
                 decl_degs, decl_mins, decl_secs,
@@ -103,7 +109,7 @@ public class StarRepository {
     }
 
     public ArrayList<Star> read_all() throws Exception {
-        var read_stmt = conn.prepareStatement("""
+        var read_stmt = conn().prepareStatement("""
                 SELECT
                 id, name, constellation, catalog_name,
                 decl_degs, decl_mins, decl_secs,
@@ -132,7 +138,7 @@ public class StarRepository {
     }
 
     private void update(Star star) throws Exception {
-        var ins = conn.prepareStatement("""
+        var ins = conn().prepareStatement("""
                 UPDATE stars SET
                 name = ?,
                 constellation = ?,
@@ -173,7 +179,7 @@ public class StarRepository {
     }
 
     public void delete(int id) throws Exception {
-        var stmt = conn.prepareStatement("""
+        var stmt = conn().prepareStatement("""
                 DELETE FROM stars WHERE id = ?;
                 """);
         stmt.setInt(1, id);
@@ -183,11 +189,11 @@ public class StarRepository {
 
     public void rename_stars() throws Exception {
         var map = new HashMap<String, ArrayList<Integer>>();
-        var consts_rs = conn.prepareStatement("SELECT DISTINCT constellation FROM stars;").executeQuery();
+        var consts_rs = conn().prepareStatement("SELECT DISTINCT constellation FROM stars;").executeQuery();
         while (consts_rs.next()) {
             map.put(consts_rs.getString(1), new ArrayList<>());
         }
-        var read_rs = conn.prepareStatement("""
+        var read_rs = conn().prepareStatement("""
                 SELECT id, constellation
                 FROM stars
                 ORDER BY apparent_magnitude;
@@ -195,7 +201,7 @@ public class StarRepository {
         while (read_rs.next()) {
             map.get(read_rs.getString(2)).add(read_rs.getInt(1));
         }
-        var set_stmt = conn.prepareStatement("UPDATE stars SET catalog_name = ? WHERE id = ?;");
+        var set_stmt = conn().prepareStatement("UPDATE stars SET catalog_name = ? WHERE id = ?;");
         for (String x : map.keySet()) {
             var len = map.get(x).size();
             for (int i = 0; i < len; i++) {
@@ -210,7 +216,7 @@ public class StarRepository {
         if (criteria == null) {
             return read_all();
         }
-        var query = conn.prepareStatement("""
+        var query = conn().prepareStatement("""
                 SELECT
                 id, name, constellation, catalog_name,
                 decl_degs, decl_mins, decl_secs,
