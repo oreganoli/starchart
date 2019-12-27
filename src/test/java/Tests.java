@@ -1,3 +1,4 @@
+import com.github.oreganoli.starchart.Bayer;
 import com.github.oreganoli.starchart.Declination;
 import com.github.oreganoli.starchart.RightAscension;
 import com.github.oreganoli.starchart.Star;
@@ -21,6 +22,7 @@ class Tests {
         assertThrows(IllegalArgumentException.class, () -> new RightAscension(0, 0, -8));
         assertThrows(IllegalArgumentException.class, () -> new RightAscension(24, 1, 2));
         assertEquals("23 h 59 m 32 s", valid_ascension.toString());
+        assertEquals("24 h 00 m 00 s", new RightAscension(24, 0, 0).toString());
     }
 
     @Test
@@ -28,13 +30,16 @@ class Tests {
         assertThrows(IllegalArgumentException.class, () -> new Declination(-90, 0, 2));
         assertThrows(IllegalArgumentException.class, () -> new Declination(-20, 60, 2));
         assertThrows(IllegalArgumentException.class, () -> new Declination(34, -2, 2));
+        assertThrows(IllegalArgumentException.class, () -> new Declination(90, 0, 1));
         var valid1 = new Declination(-89, 23, 12);
         var valid2 = new Declination(0, 0, 0);
-        var valid3 = new Declination(0, 0, 43);
+        var valid3 = new Declination(0, 0, -43);
+        var valid4 = new Declination(90, 0, 0);
         assertEquals(valid1.toString(), "-89°23'12\"");
         assertEquals(Star.Hemisphere.Southern, valid1.hemisphere());
         assertEquals(Star.Hemisphere.Equatorial, valid2.hemisphere());
-        assertEquals(Star.Hemisphere.Northern, valid3.hemisphere());
+        assertEquals(Star.Hemisphere.Southern, valid3.hemisphere());
+        assertEquals(Star.Hemisphere.Northern, valid4.hemisphere());
     }
 
     @Test
@@ -69,5 +74,14 @@ class Tests {
     @Test
     void test_star_temperature() {
         assertThrows(IllegalArgumentException.class, () -> new Star(null, "TMP0001", null, null, 80.0, valid_dist, valid_mass, valid_declination, valid_ascension, valid_magnitude));
+    }
+
+    @Test
+    void test_bayer_desigs() {
+        assertThrows(IllegalArgumentException.class, () -> Bayer.designation(-1, "Eridani"));
+        assertThrows(UnsupportedOperationException.class, () -> Bayer.designation(76, "Eridani"));
+        assertEquals("Alpha Centauri", Bayer.designation(0, "Centauri"));
+        assertEquals("Beta Orionis", Bayer.designation(1, "Orionis"));
+        assertEquals("Z Eridani", Bayer.designation(75, "Eridani"));
     }
 }

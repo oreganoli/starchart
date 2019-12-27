@@ -41,13 +41,31 @@ public class Star {
         set_apparent_magnitude(apparent_magnitude);
     }
 
-    // Helper method for converting light years to parsecs.
-    public static double ly_to_pc(double ly) {
-        return ly / LY_TO_PC;
+    @Override
+    public String toString() {
+        return "Star{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", constellation='" + constellation + '\'' +
+                ", absolute_magnitude=" + absolute_magnitude +
+                ", declination=" + declination +
+                ", right_ascension=" + right_ascension +
+                ", hemisphere=" + hemisphere +
+                ", apparent_magnitude=" + apparent_magnitude +
+                ", catalog_name='" + catalog_name + '\'' +
+                ", temperature=" + temperature +
+                ", distance=" + distance +
+                ", mass=" + mass +
+                '}';
+    }
+
+    // Helper method for converting parsecs to light years.
+    public static double pc_to_ly(double pc) {
+        return pc * LY_TO_PC;
     }
 
     private void calculate_absolute_magnitude() {
-        absolute_magnitude = apparent_magnitude - 5 * Math.log10(ly_to_pc(distance)) + 5;
+        absolute_magnitude = apparent_magnitude - 5 * Math.log10(pc_to_ly(distance)) + 5;
     }
 
     void set_apparent_magnitude(double magnitude) {
