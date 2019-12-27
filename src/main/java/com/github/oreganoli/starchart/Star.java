@@ -24,9 +24,9 @@ public class Star {
     // Temperature in degrees centigrade.
     double temperature;
     // Distance from the Solar System, measured in light years.
-    private double distance;
+    public double distance;
     // Mass relative to the Sun.
-    private double mass;
+    public double mass;
 
     public Star(Integer id, String name, String constellation, String catalog_name, double temperature, double distance, double mass, Declination declination, RightAscension ascension, double apparent_magnitude) {
         this.id = id;
