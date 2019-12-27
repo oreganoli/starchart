@@ -67,7 +67,7 @@ public class StarRepository {
         ins.execute();
     }
 
-    private Star[] read_all() throws Exception {
+    ArrayList<Star> read_all() throws Exception {
         var read_stmt = conn.prepareStatement("""
                 SELECT
                 id, name, constellation, catalog_name,
@@ -92,7 +92,7 @@ public class StarRepository {
                     rs.getDouble(12)
             ));
         }
-        return (Star[]) list.toArray();
+        return list;
     }
 
     private void update(Star star) throws Exception {
