@@ -4,9 +4,9 @@ public class RightAscension {
     private static final int MAX_HOURS = 23;
     private static final int MAX_MINSEC = 59;
 
-    private int hours;
-    private int minutes;
-    private int seconds;
+    public int hours;
+    public int minutes;
+    public int seconds;
 
     public RightAscension(int hours, int minutes, int seconds) {
         if (

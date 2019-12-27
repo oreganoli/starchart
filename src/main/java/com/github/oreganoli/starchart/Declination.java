@@ -3,9 +3,9 @@ package com.github.oreganoli.starchart;
 public class Declination {
     private static int MAX_DEGREES = 90;
     private static int MAX_MINSEC = 59;
-    private int degrees;
-    private int minutes;
-    private int seconds;
+    public int degrees;
+    public int minutes;
+    public int seconds;
 
     public Declination(int degrees, int minutes, int seconds) {
         if (Math.abs(degrees) > MAX_DEGREES || (Math.abs(degrees) == MAX_DEGREES && (minutes > 0 || seconds > 0))) {
