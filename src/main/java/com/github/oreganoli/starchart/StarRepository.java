@@ -93,9 +93,8 @@ public class StarRepository {
                                          "WHERE id = ?;");
         stmt.setInt(1, id);
         var rs = stmt.executeQuery();
-        conn.close();
         if (rs.next()) {
-            return new Star(
+            var ret = new Star(
                     rs.getInt(1),
                     rs.getString(2),
                     rs.getString(3),
@@ -106,7 +105,10 @@ public class StarRepository {
                     new Declination(rs.getInt(5), rs.getInt(6), rs.getInt(7)),
                     new RightAscension(rs.getInt(8), rs.getInt(9), rs.getInt(10)),
                     rs.getDouble(12));
+            conn.close();
+            return ret;
         } else {
+            conn.close();
             return null;
         }
     }
