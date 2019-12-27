@@ -8,10 +8,14 @@ public class Declination {
     public int seconds;
 
     public Declination(int degrees, int minutes, int seconds) {
-        if (Math.abs(degrees) > MAX_DEGREES || (Math.abs(degrees) == MAX_DEGREES && (minutes > 0 || seconds > 0))) {
-            throw new IllegalArgumentException("A star's declination can be at most 90 degrees either north or south.");
-        } else if (minutes < 0 || minutes > MAX_MINSEC || seconds < 0 || seconds > MAX_MINSEC) {
-            throw new IllegalArgumentException("There are 60 minutes in an hour and 60 seconds in a minute.");
+        if (!(
+                (Math.abs(degrees) == 90 && minutes == 0 && seconds == 0) ||
+                        (Math.abs(degrees) < 90 && degrees != 0 && minutes >= 0 && minutes <= MAX_MINSEC && seconds >= 0 && seconds <= MAX_MINSEC) ||
+                        (degrees == 0 && Math.abs(minutes) <= MAX_MINSEC && seconds >= 0 && seconds <= MAX_MINSEC) ||
+                        (degrees == 0 && minutes == 0 && Math.abs(seconds) <= MAX_MINSEC) ||
+                        (degrees == 0 && minutes == 0 && seconds == 0)
+        )) {
+            throw new IllegalArgumentException("Declinations may be at most 90 degrees either north or south.");
         } else {
             this.degrees = degrees;
             this.minutes = minutes;
@@ -20,18 +24,28 @@ public class Declination {
     }
 
     public String toString() {
-        return String.format("%02d°%02d\'%02d\"", degrees, minutes, seconds);
+        return String.format("%02d°%02d'%02d\"", degrees, minutes, seconds);
     }
 
     public Star.Hemisphere hemisphere() {
         if (degrees == 0) {
-            if (minutes > 0 || seconds > 0) {
-                return Star.Hemisphere.Northern;
+            if (minutes == 0) {
+                if (seconds == 0) {
+                    return Star.Hemisphere.Equatorial;
+                } else if (seconds < 0) {
+                    return Star.Hemisphere.Southern;
+                } else {
+                    return Star.Hemisphere.Northern;
+                }
+            } else if (minutes < 0) {
+                return Star.Hemisphere.Southern;
             } else {
-                return Star.Hemisphere.Equatorial;
+                return Star.Hemisphere.Northern;
             }
+        } else if (degrees < 0) {
+            return Star.Hemisphere.Southern;
         } else {
-            return degrees > 0 ? Star.Hemisphere.Northern : Star.Hemisphere.Southern;
+            return Star.Hemisphere.Northern;
         }
     }
 }

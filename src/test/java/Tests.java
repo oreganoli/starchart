@@ -30,13 +30,16 @@ class Tests {
         assertThrows(IllegalArgumentException.class, () -> new Declination(-90, 0, 2));
         assertThrows(IllegalArgumentException.class, () -> new Declination(-20, 60, 2));
         assertThrows(IllegalArgumentException.class, () -> new Declination(34, -2, 2));
+        assertThrows(IllegalArgumentException.class, () -> new Declination(90, 0, 1));
         var valid1 = new Declination(-89, 23, 12);
         var valid2 = new Declination(0, 0, 0);
-        var valid3 = new Declination(0, 0, 43);
+        var valid3 = new Declination(0, 0, -43);
+        var valid4 = new Declination(90, 0, 0);
         assertEquals(valid1.toString(), "-89°23'12\"");
         assertEquals(Star.Hemisphere.Southern, valid1.hemisphere());
         assertEquals(Star.Hemisphere.Equatorial, valid2.hemisphere());
-        assertEquals(Star.Hemisphere.Northern, valid3.hemisphere());
+        assertEquals(Star.Hemisphere.Southern, valid3.hemisphere());
+        assertEquals(Star.Hemisphere.Northern, valid4.hemisphere());
     }
 
     @Test
