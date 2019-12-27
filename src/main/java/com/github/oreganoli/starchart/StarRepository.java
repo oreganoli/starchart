@@ -34,10 +34,10 @@ public class StarRepository {
                         ra_hrs INTEGER NOT NULL CHECK(ra_hrs BETWEEN 0 AND 24),
                         ra_mins INTEGER NOT NULL CHECK(ra_mins BETWEEN 0 AND 59),
                         ra_secs INTEGER NOT NULL CHECK(decl_mins BETWEEN 0 AND 59),
-                        distance_ly REAL NOT NULL CHECK(distance_ly > 0),
-                        apparent_magnitude REAL NOT NULL CHECK (apparent_magnitude BETWEEN -26.74 AND 15.00),
-                        temperature_c REAL NOT NULL CHECK (temperature_c >= 2000),
-                        mass REAL CHECK (mass BETWEEN 0.1 AND 50)
+                        distance_ly DOUBLE PRECISION NOT NULL CHECK(distance_ly > 0),
+                        apparent_magnitude DOUBLE PRECISION NOT NULL CHECK (apparent_magnitude BETWEEN -26.74 AND 15.00),
+                        temperature_c DOUBLE PRECISION NOT NULL CHECK (temperature_c >= 2000),
+                        mass DOUBLE PRECISION NOT NULL CHECK (mass BETWEEN 0.1 AND 50)
                     );
                 """);
         initStatement.execute();
