@@ -74,7 +74,8 @@ public class StarRepository {
                 decl_degs, decl_mins, decl_secs,
                 ra_hrs, ra_mins, ra_secs,
                 distance_ly, apparent_magnitude, temperature_c, mass
-                FROM stars;
+                FROM stars
+                ORDER BY id;
                 """);
         var list = new ArrayList<Star>();
         var rs = read_stmt.executeQuery();
