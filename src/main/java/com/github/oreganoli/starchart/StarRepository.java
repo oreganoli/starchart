@@ -167,6 +167,8 @@ public class StarRepository {
         ins.setDouble(11, star.temperature);
         ins.setDouble(12, star.mass);
         ins.setInt(13, star.id);
+        ins.execute();
+        conn.close();
     }
 
     public void upsert(Star star) throws Exception {
