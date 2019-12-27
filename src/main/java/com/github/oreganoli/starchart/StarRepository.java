@@ -33,7 +33,8 @@ public class StarRepository {
     }
 
     public void initialize() throws Exception {
-        var initStatement = conn().prepareStatement("""
+        var conn = conn();
+        var initStatement = conn.prepareStatement("""
                     CREATE TABLE IF NOT EXISTS stars (
                         id SERIAL PRIMARY KEY,
                         name VARCHAR(7) NOT NULL UNIQUE CHECK (name ~ '[A-Z]{3}[0-9]{4}'),
@@ -52,6 +53,7 @@ public class StarRepository {
                     );
                 """);
         initStatement.execute();
+        conn.close();
     }
 
     private void create(Star star) throws Exception {
@@ -96,8 +98,8 @@ public class StarRepository {
                 WHERE id = ?;""");
         stmt.setInt(1, id);
         var rs = stmt.executeQuery();
+        conn.close();
         if (rs.next()) {
-            conn.close();
             return new Star(
                     rs.getInt(1),
                     rs.getString(2),
@@ -110,7 +112,6 @@ public class StarRepository {
                     new RightAscension(rs.getInt(8), rs.getInt(9), rs.getInt(10)),
                     rs.getDouble(12));
         } else {
-            conn.close();
             return null;
         }
     }
