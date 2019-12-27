@@ -1,3 +1,4 @@
+import com.github.oreganoli.starchart.Bayer;
 import com.github.oreganoli.starchart.Declination;
 import com.github.oreganoli.starchart.RightAscension;
 import com.github.oreganoli.starchart.Star;
@@ -69,5 +70,14 @@ class Tests {
     @Test
     void test_star_temperature() {
         assertThrows(IllegalArgumentException.class, () -> new Star(null, "TMP0001", null, null, 80.0, valid_dist, valid_mass, valid_declination, valid_ascension, valid_magnitude));
+    }
+
+    @Test
+    void test_bayer_desigs() {
+        assertThrows(IllegalArgumentException.class, () -> Bayer.designation(-1, "Eridani"));
+        assertThrows(UnsupportedOperationException.class, () -> Bayer.designation(76, "Eridani"));
+        assertEquals("Alpha Centauri", Bayer.designation(0, "Centauri"));
+        assertEquals("Beta Orionis", Bayer.designation(1, "Orionis"));
+        assertEquals("Z Eridani", Bayer.designation(75, "Eridani"));
     }
 }
