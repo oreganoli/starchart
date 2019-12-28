@@ -9,6 +9,18 @@ public class Criteria {
     public Star.Hemisphere hemisphere;
     public Boolean potential_supernovae;
 
+    @Override
+    public String toString() {
+        return "Criteria{" +
+               "constellation='" + constellation + '\'' +
+               ", distance_parsecs=" + distance_parsecs +
+               ", temperature=" + temperature +
+               ", apparent_magnitude=" + apparent_magnitude +
+               ", hemisphere=" + hemisphere +
+               ", potential_supernovae=" + potential_supernovae +
+               '}';
+    }
+
     public Criteria(String constellation, Range<Double> distance_parsecs, Range<Double> temperature, Range<Double> apparent_magnitude, Star.Hemisphere hemisphere, Boolean potential_supernovae) {
         this.constellation = constellation;
         this.distance_parsecs = distance_parsecs;

@@ -10,4 +10,9 @@ public class Range<T> {
         this.min = min;
         this.max = max;
     }
+
+    @Override
+    public String toString() {
+        return String.format("[%s; %s]", min, max);
+    }
 }
