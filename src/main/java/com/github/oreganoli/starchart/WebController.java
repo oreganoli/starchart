@@ -1,10 +1,7 @@
 package com.github.oreganoli.starchart;
 
 import com.blade.mvc.RouteContext;
-import com.blade.mvc.annotation.GetRoute;
-import com.blade.mvc.annotation.Path;
-import com.blade.mvc.annotation.PostRoute;
-import com.blade.mvc.annotation.PutRoute;
+import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.Request;
 import com.google.gson.Gson;
 
@@ -77,6 +74,25 @@ public class WebController {
         } catch (IllegalArgumentException e) {
             ctx.status(422);
             ctx.json(new ErrWrapper(e));
+        } catch (Exception e) {
+            ctx.status(500);
+            ctx.json(new ErrWrapper(e));
+        }
+    }
+
+    @DeleteRoute("/delete/:id")
+    public void delete(RouteContext ctx) {
+        int id;
+        try {
+            id = ctx.pathInt("id");
+        } catch (Exception e) {
+            ctx.status(422);
+            ctx.json(new ErrWrapper(e));
+            return;
+        }
+        try {
+            repo.delete(id);
+            ctx.json(id);
         } catch (Exception e) {
             ctx.status(500);
             ctx.json(new ErrWrapper(e));
