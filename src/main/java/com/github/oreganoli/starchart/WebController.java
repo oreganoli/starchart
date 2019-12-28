@@ -2,7 +2,6 @@ package com.github.oreganoli.starchart;
 
 import com.blade.mvc.RouteContext;
 import com.blade.mvc.annotation.GetRoute;
-import com.blade.mvc.annotation.JSON;
 import com.blade.mvc.annotation.Path;
 
 @Path
@@ -19,14 +18,13 @@ public class WebController {
     }
 
     @GetRoute("/stars/:id")
-    @JSON
     public void get_star_by_id(RouteContext ctx) {
         int id;
         try {
             id = ctx.pathInt("id");
         } catch (Exception e) {
             ctx.status(400);
-            ctx.json(e.getMessage());
+            ctx.json(new ErrWrapper(e));
             return;
         }
         try {
@@ -37,7 +35,18 @@ public class WebController {
             ctx.json(star);
         } catch (Exception e) {
             ctx.status(500);
-            ctx.json(e.getMessage());
+            ctx.json(new ErrWrapper(e));
+        }
+    }
+
+    @GetRoute("/stars")
+    public void get_stars(RouteContext ctx) {
+        try {
+            var stars = repo.read_all();
+            ctx.json(stars);
+        } catch (Exception e) {
+            ctx.status(500);
+            ctx.json(new ErrWrapper(e));
         }
     }
 }
