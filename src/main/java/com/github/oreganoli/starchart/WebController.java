@@ -69,8 +69,8 @@ public class WebController {
     public void upsert(Request req, RouteContext ctx) {
         try {
             var star = gson.fromJson(req.bodyToString(), Star.class);
-            repo.upsert(star);
-            ctx.json("OK");
+            var id = repo.upsert(star);
+            ctx.json(repo.read(id));
         } catch (AlreadyExistsException e) {
             ctx.status(409);
             ctx.json(new ErrWrapper(e));

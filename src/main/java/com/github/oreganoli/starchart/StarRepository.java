@@ -54,7 +54,7 @@ public class StarRepository {
         conn.close();
     }
 
-    private void create(Star star) throws Exception {
+    private int create(Star star) throws Exception {
         var conn = conn();
         var unq = conn.prepareStatement("SELECT EXISTS (SELECT id FROM stars WHERE name = ?);");
         unq.setString(1, star.name);
@@ -65,7 +65,8 @@ public class StarRepository {
         var ins = conn.prepareStatement("INSERT INTO stars\n" +
                                         "(name, constellation, decl_degs, decl_mins, decl_secs, ra_hrs, ra_mins, ra_secs, distance_ly, apparent_magnitude, temperature_c, mass)\n" +
                                         "VALUES\n" +
-                                        "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);\n");
+                                        "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)\n" +
+                                        "RETURNING id;\n");
         ins.setString(1, star.name);
         ins.setString(2, star.constellation);
         ins.setInt(3, star.declination.degrees);
@@ -78,8 +79,13 @@ public class StarRepository {
         ins.setDouble(10, star.apparent_magnitude);
         ins.setDouble(11, star.temperature);
         ins.setDouble(12, star.mass);
-        ins.execute();
+        var idr = ins.executeQuery();
+        int id = 0;
+        while (idr.next()) {
+            id = idr.getInt(1);
+        }
         conn.close();
+        return id;
     }
 
     public Star read(int id) throws Exception {
@@ -142,7 +148,7 @@ public class StarRepository {
         return list;
     }
 
-    private void update(Star star) throws Exception {
+    private int update(Star star) throws Exception {
         var conn = conn();
         var ins = conn.prepareStatement("UPDATE stars SET\n" +
                                         "name = ?,\n" +
@@ -173,15 +179,18 @@ public class StarRepository {
         ins.setInt(13, star.id);
         ins.execute();
         conn.close();
+        return star.id;
     }
 
-    public void upsert(Star star) throws Exception {
+    public int upsert(Star star) throws Exception {
+        int id;
         if (star.id == null) {
-            create(star);
+            id = create(star);
         } else {
-            update(star);
+            id = update(star);
         }
         rename_stars();
+        return id;
     }
 
     public void delete(int id) throws Exception {
