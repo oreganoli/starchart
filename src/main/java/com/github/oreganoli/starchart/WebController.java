@@ -3,11 +3,14 @@ package com.github.oreganoli.starchart;
 import com.blade.mvc.RouteContext;
 import com.blade.mvc.annotation.GetRoute;
 import com.blade.mvc.annotation.Path;
+import com.blade.mvc.annotation.PostRoute;
+import com.blade.mvc.http.Request;
+import com.google.gson.Gson;
 
 @Path
 public class WebController {
     static StarRepository repo;
-
+    static Gson gson = new Gson();
     static {
         try {
             repo = new StarRepository();
@@ -44,6 +47,17 @@ public class WebController {
         try {
             var stars = repo.read_all();
             ctx.json(stars);
+        } catch (Exception e) {
+            ctx.status(500);
+            ctx.json(new ErrWrapper(e));
+        }
+    }
+
+    @PostRoute("/search")
+    public void search_stars(Request req, RouteContext ctx) {
+        try {
+            var criteria = gson.fromJson(req.bodyToString(), Criteria.class);
+            ctx.json(repo.search(criteria));
         } catch (Exception e) {
             ctx.status(500);
             ctx.json(new ErrWrapper(e));
