@@ -31,6 +31,9 @@ public class Star {
     public Star(Integer id, String name, String constellation, String catalog_name, double temperature, double distance, double mass, Declination declination, RightAscension ascension, double apparent_magnitude) {
         this.id = id;
         set_name(name);
+        if (constellation == null || constellation.isEmpty()) {
+            throw new IllegalArgumentException("Stars must belong to a constellation.");
+        }
         this.constellation = constellation;
         this.catalog_name = catalog_name;
         set_temperature(temperature);

@@ -183,6 +183,7 @@ public class StarRepository {
     }
 
     public int upsert(Star star) throws Exception {
+        StarExceptionThrower.validate(star);
         int id;
         if (star.id == null) {
             id = create(star);
