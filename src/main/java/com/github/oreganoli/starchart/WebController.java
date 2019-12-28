@@ -4,6 +4,7 @@ import com.blade.mvc.RouteContext;
 import com.blade.mvc.annotation.GetRoute;
 import com.blade.mvc.annotation.Path;
 import com.blade.mvc.annotation.PostRoute;
+import com.blade.mvc.annotation.PutRoute;
 import com.blade.mvc.http.Request;
 import com.google.gson.Gson;
 
@@ -58,6 +59,24 @@ public class WebController {
         try {
             var criteria = gson.fromJson(req.bodyToString(), Criteria.class);
             ctx.json(repo.search(criteria));
+        } catch (Exception e) {
+            ctx.status(500);
+            ctx.json(new ErrWrapper(e));
+        }
+    }
+
+    @PutRoute("/upsert")
+    public void upsert(Request req, RouteContext ctx) {
+        try {
+            var star = gson.fromJson(req.bodyToString(), Star.class);
+            repo.upsert(star);
+            ctx.json("OK");
+        } catch (AlreadyExistsException e) {
+            ctx.status(409);
+            ctx.json(new ErrWrapper(e));
+        } catch (IllegalArgumentException e) {
+            ctx.status(422);
+            ctx.json(new ErrWrapper(e));
         } catch (Exception e) {
             ctx.status(500);
             ctx.json(new ErrWrapper(e));

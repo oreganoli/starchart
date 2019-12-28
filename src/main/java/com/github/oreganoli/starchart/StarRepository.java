@@ -60,7 +60,7 @@ public class StarRepository {
         unq.setString(1, star.name);
         var urs = unq.executeQuery();
         if (urs.next() && urs.getBoolean(1)) {
-            throw new IllegalArgumentException("This name is already taken by another star.");
+            throw new AlreadyExistsException("This name is already taken by another star.");
         }
         var ins = conn.prepareStatement("INSERT INTO stars\n" +
                                         "(name, constellation, decl_degs, decl_mins, decl_secs, ra_hrs, ra_mins, ra_secs, distance_ly, apparent_magnitude, temperature_c, mass)\n" +
