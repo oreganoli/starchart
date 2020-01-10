@@ -5,11 +5,21 @@ import com.blade.mvc.annotation.*;
 import com.blade.mvc.http.Request;
 import com.google.gson.Gson;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 @Path
 public class WebController {
     static StarRepository repo;
     static Gson gson = new Gson();
+    static String indexPage;
     static {
+        try {
+            indexPage = Files.readString(Paths.get("src/main/resources/static/index.html"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         try {
             repo = new StarRepository();
         } catch (Exception e) {
@@ -98,4 +108,10 @@ public class WebController {
             ctx.json(new ErrWrapper(e));
         }
     }
+
+    @GetRoute("/")
+    public void index(RouteContext ctx) {
+        ctx.html(indexPage);
+    }
+
 }
