@@ -1,0 +1,22 @@
+{
+  "name": "starchart-frontend",
+  "version": "1.0.0",
+  "description": "A JS front-end for starchart",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/oreganoli/starchart"
+  },
+  "author": "oreganoli",
+  "license": "MIT",
+  "devDependencies": {
+    "snowpack": "^1.0.2"
+  },
+  "dependencies": {
+    "htm": "^2.2.1",
+    "preact": "^10.2.1"
+  }
+}

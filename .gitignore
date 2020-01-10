@@ -39,6 +39,7 @@ hs_err_pid*
 .idea/**/libraries
 
 out/
+target/
 
 node_modules
 /target/classes/META-INF/starchart.kotlin_module
