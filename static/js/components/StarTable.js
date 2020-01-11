@@ -28,25 +28,30 @@ const StarRow = (props) => {
 
 export const StarTable = () => {
     let stars = useSelector(state => state.stars);
+    let search = useSelector(state => state.search);
+    let title = search == null ? "All stars" : "Search results";
     if (stars.length === 0) {
-        return <p>No stars loaded.</p>;
+        return <div><h2>{title}</h2><p>No stars loaded.</p></div>
     } else {
-        return <table>
-            <thead>
-            <th>Name</th>
-            <th>Constellation</th>
-            <th>Catalog name</th>
-            <th>Apparent magnitude</th>
-            <th>Absolute magnitude</th>
-            <th>Declination</th>
-            <th>Right ascension</th>
-            <th>Hemisphere</th>
-            <th>Temperature</th>
-            <th>Distance</th>
-            <th>Mass</th>
-            </thead>
-            <tbody>{stars.map(each => <StarRow star={each}/>)}</tbody>
-        </table>;
+        return <div>
+            <h2>{title}</h2>
+            <table>
+                <thead>
+                <th>Name</th>
+                <th>Constellation</th>
+                <th>Catalog name</th>
+                <th>Apparent magnitude</th>
+                <th>Absolute magnitude</th>
+                <th>Declination</th>
+                <th>Right ascension</th>
+                <th>Hemisphere</th>
+                <th>Temperature</th>
+                <th>Distance</th>
+                <th>Mass</th>
+                </thead>
+                <tbody>{stars.map(each => <StarRow star={each}/>)}</tbody>
+            </table>
+        </div>;
     }
 };
 

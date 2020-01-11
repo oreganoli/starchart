@@ -9,8 +9,10 @@ import StarTable from "./components/StarTable";
 
 require("babel-polyfill");
 
-const appName = "starchart";
 const store = createStore(rootReducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 get_all_stars().then(stars => store.dispatch(setStars(stars)));
 const root = document.getElementById("root");
-render(<Provider store={store}><StarTable/></Provider>, root);
+render(<Provider store={store}>
+    <h1>starchart</h1>
+    <StarTable/>
+</Provider>, root);
