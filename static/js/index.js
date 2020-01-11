@@ -1,5 +1,5 @@
 import "preact/debug";
-import {render} from "preact";
+import {render, h} from "preact";
 import {createStore} from "redux"
 import rootReducer from "./reducers/rootReducer";
 import {Provider} from "react-redux"

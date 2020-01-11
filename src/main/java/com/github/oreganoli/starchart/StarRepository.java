@@ -127,7 +127,7 @@ public class StarRepository {
                                               "ra_hrs, ra_mins, ra_secs,\n" +
                                               "distance_ly, apparent_magnitude, temperature_c, mass\n" +
                                               "FROM stars\n" +
-                                              "ORDER BY id;\n");
+                                              "ORDER BY constellation;\n");
         var list = new ArrayList<Star>();
         var rs = read_stmt.executeQuery();
         while (rs.next()) {
@@ -245,7 +245,7 @@ public class StarRepository {
                                           "temperature_c BETWEEN ? AND ? AND\n" +
                                           "apparent_magnitude BETWEEN ? AND ? AND\n" +
                                           "mass BETWEEN ? AND ?\n" +
-                                          "ORDER BY id;\n");
+                                          "ORDER BY constellation;\n");
         // If a particular criterion is null and thus irrelevant, then the sides of the BETWEEN clause are filled with the minimum and maximum legal values, making it meaningless.
         // This lets us avoid dynamically composing the query.
         // Unfortunately, filtering by hemisphere has to be done after retrieving the data, as it isn't an atomic scalar value we could do this with.

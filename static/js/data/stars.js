@@ -1,4 +1,5 @@
 import React from "preact/compat";
+import {h} from "preact";
 
 export const get_all_stars = async () => {
     let request = new Request("/stars", {

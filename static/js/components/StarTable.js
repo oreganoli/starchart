@@ -1,4 +1,5 @@
 import React from "preact/compat";
+import {h} from "preact";
 import {displayDeclination, displayLy, displayRightAsc, displaySolar, displayTemp} from "../data/stars";
 import {useSelector} from "react-redux";
 
