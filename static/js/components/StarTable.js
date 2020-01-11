@@ -12,8 +12,8 @@ import {useStoreState} from "pullstate";
 import {useEffect} from "preact/hooks";
 import {AppStore} from "../store";
 
-const edit_star = (id) => AppStore.update(s => {
-    s.edit = id;
+const edit_star = (star) => AppStore.update(s => {
+    s.edit = star;
 });
 const del_star = (id) => AppStore.update(s => {
     s.del = id;
@@ -44,7 +44,7 @@ const StarRow = (props) => {
         <td>{displayLy(distance)}</td>
         <td>{displaySolar(mass)}</td>
         <td>
-            <button onClick={() => edit_star(id)}>📝 Edit</button>
+            <button onClick={() => edit_star(props.star)}>📝 Edit</button>
             <button onClick={() => del_star(id)}>🗑️ Delete</button>
         </td>
     </tr>
@@ -80,12 +80,12 @@ export const StarTable = () => {
                 <th>Name</th>
                 <th>Constellation</th>
                 <th>Catalog name</th>
-                <th>Apparent magnitude</th>
-                <th>Absolute magnitude</th>
+                <th>App. magnitude</th>
+                <th>Abs. magnitude</th>
                 <th>Declination</th>
                 <th>Right ascension</th>
                 <th>Hemisphere</th>
-                <th>Temperature</th>
+                <th>Temp.</th>
                 <th>Distance</th>
                 <th>Mass</th>
                 <th>Actions</th>
