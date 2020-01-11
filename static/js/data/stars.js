@@ -5,3 +5,5 @@ export const get_all_stars = async () => {
     let response = await fetch(request);
     return await response.json();
 };
+
+export const setStars = (stars) => ({type: "SET_STARS", data: stars});
