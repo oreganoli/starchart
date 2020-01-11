@@ -1,14 +1,20 @@
 import React from "preact/compat";
 import {h} from "preact";
 import {useStoreState} from "pullstate";
-import {delete_star} from "../data/stars";
+import {delete_star, search_stars} from "../data/stars";
 import {AppStore} from "../store";
 
 const accept = (id) => {
+    let search = useStoreState(AppStore, s => s.search);
     delete_star(id)
-        .then(() => AppStore.update(s => {
-            s.del = null;
-        }))
+        .then(() => {
+            console.log(`deleted star with id ${id}`);
+            AppStore.update(s => {
+                s.del = null;
+            });
+        }).then(() => search_stars(search).then(result => AppStore.update(s => {
+        s.stars = result;
+    })));
 };
 
 const reject = () => {

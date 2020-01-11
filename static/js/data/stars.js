@@ -1,6 +1,5 @@
 import React from "preact/compat";
 import {h} from "preact";
-
 export const get_all_stars = async () => {
     let request = new Request("/stars", {
         method: "GET"
@@ -26,12 +25,8 @@ export const delete_star = async (id) => {
     let request = new Request(`/stars/${id}`, {
         method: "DELETE"
     });
-    let response = await fetch(request);
-    return await response.json();
+    await fetch(request);
 };
-
-export const setStars = (stars) => ({type: "SET_STARS", data: stars});
-
 export const displayDeclination = ({degrees, minutes, seconds}) => (`${degrees}°${minutes}'${seconds}"`);
 export const displayRightAsc = ({hours, minutes, seconds}) => (`${hours}h ${minutes}m ${seconds}s`);
 export const displayTemp = (temp) => (`${temp}°C`);
