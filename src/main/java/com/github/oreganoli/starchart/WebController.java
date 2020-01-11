@@ -60,4 +60,21 @@ public class WebController {
             ctx.status(500).json(new ErrWrapper(e));
         }
     }
+
+    public static void upsert(Context ctx) {
+        Star star;
+        try {
+            star = ctx.bodyAsClass(Star.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ctx.status(422).json(new ErrWrapper(e));
+            return;
+        }
+        try {
+            ctx.json(repo.upsert(star));
+        } catch (Exception e) {
+            e.printStackTrace();
+            ctx.status(422).json(new ErrWrapper(e));
+        }
+    }
 }
