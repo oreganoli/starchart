@@ -1,6 +1,6 @@
 import React from "preact/compat";
 import {h} from "preact";
-
+import {useDispatch} from "react-redux";
 
 export const get_all_stars = async () => {
     let request = new Request("/stars", {
@@ -23,6 +23,14 @@ export const search_stars = async (criteria) => {
     }
 };
 
+export const delete_star = async (id) => {
+    let request = new Request(`/stars/${id}`, {
+        method: "DELETE"
+    });
+    let response = await fetch(request);
+    return await response.json();
+};
+
 export const setStars = (stars) => ({type: "SET_STARS", data: stars});
 
 export const displayDeclination = ({degrees, minutes, seconds}) => (`${degrees}°${minutes}'${seconds}"`);
@@ -34,6 +42,6 @@ export const displaySolar = (mass) => (<span>{mass}M<sub>☉</sub></span>);
 export const edit = (id) => {
     console.log(`Editing is not implemented yet. Was called with id = ${id}.`);
 };
-export const del = (id) => {
-    console.log(`Deleting is not implemented yet. Was called with id = ${id}.`);
+export const del = (dispatch, id) => {
+    dispatch({type: "SET_DEL", data: id});
 };

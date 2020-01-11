@@ -15,6 +15,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {useEffect} from "preact/hooks";
 
 const StarRow = (props) => {
+    let dispatch = useDispatch();
     let {
         id, name, constellation,
         absolute_magnitude, declination,
@@ -35,8 +36,8 @@ const StarRow = (props) => {
         <td>{displayLy(distance)}</td>
         <td>{displaySolar(mass)}</td>
         <td>
-            <button onClick={() => edit(id)}>📝 Edit</button>
-            <button onClick={() => del(id)}>🗑️ Delete</button>
+            <button onClick={() => edit(dispatch, id)}>📝 Edit</button>
+            <button onClick={() => del(dispatch, id)}>🗑️ Delete</button>
         </td>
     </tr>
 };
