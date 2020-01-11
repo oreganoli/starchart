@@ -11,7 +11,7 @@ export const EditModal = () => {
     }
     let title = edit.id == null ? "Create star" : "Edit star";
     let [workingCopy, setWorkingCopy] = useState({
-        id: edit.id, // as visible above, a null ID means a new star is being added
+        id: edit.id || null, // as visible above, a null ID means a new star is being added
         name: edit.name || "",
         constellation: edit.constellation || "",
         absolute_magnitude: null, // not user-editable, derived by the server
