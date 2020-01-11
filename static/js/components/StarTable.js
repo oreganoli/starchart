@@ -14,8 +14,8 @@ const StarRow = (props) => {
         <td>{name}</td>
         <td>{constellation}</td>
         <td>{catalog_name}</td>
-        <td>{absolute_magnitude}</td>
         <td>{apparent_magnitude}</td>
+        <td>{absolute_magnitude}</td>
         <td>{displayDeclination(declination)}</td>
         <td>{displayRightAsc(right_ascension)}</td>
         <td>{hemisphere}</td>
@@ -31,6 +31,19 @@ export const StarTable = () => {
         return <p>No stars loaded.</p>;
     } else {
         return <table>
+            <thead>
+            <th>Name</th>
+            <th>Constellation</th>
+            <th>Catalog name</th>
+            <th>Apparent magnitude</th>
+            <th>Absolute magnitude</th>
+            <th>Declination</th>
+            <th>Right ascension</th>
+            <th>Hemisphere</th>
+            <th>Temperature</th>
+            <th>Distance</th>
+            <th>Mass</th>
+            </thead>
             <tbody>{stars.map(each => <StarRow star={each}/>)}</tbody>
         </table>;
     }
