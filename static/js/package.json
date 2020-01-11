@@ -25,7 +25,6 @@
   "dependencies": {
     "htm": "^2.2.1",
     "preact": "^10.2.1",
-    "redux": "^4.0.5",
-    "react-redux": "^7.1.3"
+    "pullstate": "^1.8.0"
   }
 }

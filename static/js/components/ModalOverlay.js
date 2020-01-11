@@ -1,13 +1,14 @@
 import React from "preact/compat";
 import {h} from "preact";
-import {useSelector} from "react-redux";
+import {useStoreState} from "pullstate";
+import {AppStore} from "../store";
 
 export const ModalOverlay = (props) => {
     let [del, edit, error, searchWindow] = [
-        useSelector(state => state.del),
-        useSelector(state => state.edit),
-        useSelector(state => state.error),
-        useSelector(state => state.searchWindow)
+        useStoreState(AppStore, state => state.del),
+        useStoreState(AppStore, s => s.edit),
+        useStoreState(AppStore, s => s.error),
+        useStoreState(AppStore, s => s.searchWindow)
     ];
     if (del != null || edit != null || error != null || searchWindow) {
         return <div className={"modal_overlay"}>

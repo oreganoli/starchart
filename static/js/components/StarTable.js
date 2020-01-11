@@ -7,15 +7,20 @@ import {
     displaySolar,
     displayTemp,
     search_stars,
-    setStars,
-    edit,
-    del
+    setStars
 } from "../data/stars";
-import {useDispatch, useSelector} from "react-redux";
+import {useStoreState} from "pullstate";
 import {useEffect} from "preact/hooks";
+import {AppStore} from "../store";
+
+const edit_star = (id) => AppStore.update(s => {
+    s.edit = id;
+});
+const del_star = (id) => AppStore.update(s => {
+    s.del = id;
+});
 
 const StarRow = (props) => {
-    let dispatch = useDispatch();
     let {
         id, name, constellation,
         absolute_magnitude, declination,
@@ -36,8 +41,8 @@ const StarRow = (props) => {
         <td>{displayLy(distance)}</td>
         <td>{displaySolar(mass)}</td>
         <td>
-            <button onClick={() => edit(dispatch, id)}>📝 Edit</button>
-            <button onClick={() => del(dispatch, id)}>🗑️ Delete</button>
+            <button onClick={() => edit_star(id)}>📝 Edit</button>
+            <button onClick={() => del_star(id)}>🗑️ Delete</button>
         </td>
     </tr>
 };
@@ -49,11 +54,12 @@ const Buttons = () => (<div>
 </div>);
 
 export const StarTable = () => {
-    let stars = useSelector(state => state.stars);
-    let search = useSelector(state => state.search);
-    let dispatch = useDispatch();
+    let stars = useStoreState(AppStore, s => s.stars);
+    let search = useStoreState(AppStore, s => s.search);
     useEffect(() => {
-        search_stars(search).then(stars => dispatch(setStars(stars)));
+        search_stars(search).then(stars => AppStore.update(s => {
+            s.stars = stars;
+        }));
     }, [search]);
     let title = search == null ? "All stars" : "Search results";
     if (stars.length === 0) {

@@ -1,3 +1,29 @@
+* {
+    font-family: 'Alegreya Sans', sans-serif;
+    --bg: rgba(20, 20, 40);
+    --fg: rgb(220, 220, 220);
+    color: var(--fg);
+}
+
+body, .window {
+    background-color: var(--bg);
+}
+
+button {
+    background-color: var(--bg);
+    color: var(--fg);
+    padding: 0.2em;
+    border: 1px solid var(--fg);
+    border-radius: 2px;
+    vertical-align: center;
+}
+
+.button_row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
 h1 {
     margin-top: 0;
 }
@@ -12,9 +38,21 @@ h1 {
 .modal_dimmer {
     position: absolute;
     background-color: azure;
-    backdrop-filter: blur(2px);
-    opacity: 60%;
+    backdrop-filter: blur(4px);
+    opacity: 40%;
     width: 100vw;
     height: 100vh;
     z-index: 2;
+}
+
+.window {
+    border: 2px solid var(--fg);
+    border-radius: 2px;
+    padding: 1em;
+    position: fixed;
+    margin: 0 auto;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
 }

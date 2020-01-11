@@ -1,33 +1,33 @@
 import React from "preact/compat";
-import {h} from "react";
-import {useSelector} from "react-redux";
-import {useDispatch} from "react-redux";
+import {h} from "preact";
+import {useStoreState} from "pullstate";
 import {delete_star} from "../data/stars";
+import {AppStore} from "../store";
 
-const clear_del = () => ({type: "CLEAR_DEL"});
-
-const accept = (dispatch, id) => {
+const accept = (id) => {
     delete_star(id)
-        .then(dispatch(clear_del()))
+        .then(() => AppStore.update(s => {
+            s.del = null;
+        }))
 };
 
-const reject = (dispatch) => {
-    dispatch(clear_del());
+const reject = () => {
+    AppStore.update(s => {
+        s.del = null;
+    })
 };
 
 export const DeleteModal = () => {
-    let del = useSelector(state => state.del);
-    let dispatch = useDispatch();
-    if (del != null) {
-        return <div className={"window"}>
-            <h2>Delete star?</h2>
-            <p>Are you sure you want to delete the star with the id {del}?</p>
-            <div className={"button_row"}>
-                <button onClick={() => accept(dispatch, del)}>Yes</button>
-                <button onClick={() => reject(dispatch)}>No</button>
-            </div>
-        </div>;
-    } else {
+    let del = useStoreState(AppStore, s => s.del);
+    if (del == null) {
         return null;
     }
+    return <div className={"window"}>
+        <h2>Delete star?</h2>
+        <p>Are you sure you want to delete the star with the id {del}?</p>
+        <div className={"button_row"}>
+            <button onClick={() => accept(del)}>Yes</button>
+            <button onClick={() => reject()}>No</button>
+        </div>
+    </div>;
 };
