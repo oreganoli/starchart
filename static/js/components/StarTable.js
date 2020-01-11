@@ -1,7 +1,16 @@
 import React from "preact/compat";
 import {h} from "preact";
-import {displayDeclination, displayLy, displayRightAsc, displaySolar, displayTemp} from "../data/stars";
-import {useSelector} from "react-redux";
+import {
+    displayDeclination,
+    displayLy,
+    displayRightAsc,
+    displaySolar,
+    displayTemp,
+    search_stars,
+    setStars
+} from "../data/stars";
+import {useDispatch, useSelector} from "react-redux";
+import {useEffect} from "preact/hooks";
 
 const StarRow = (props) => {
     let {
@@ -29,6 +38,10 @@ const StarRow = (props) => {
 export const StarTable = () => {
     let stars = useSelector(state => state.stars);
     let search = useSelector(state => state.search);
+    let dispatch = useDispatch();
+    useEffect(() => {
+        search_stars(search).then(stars => dispatch(setStars(stars)));
+    }, [search]);
     let title = search == null ? "All stars" : "Search results";
     if (stars.length === 0) {
         return <div><h2>{title}</h2><p>No stars loaded.</p></div>
