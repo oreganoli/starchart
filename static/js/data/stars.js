@@ -1,3 +1,5 @@
+import React from "preact/compat";
+
 export const get_all_stars = async () => {
     let request = new Request("/stars", {
         method: "GET"
@@ -7,3 +9,9 @@ export const get_all_stars = async () => {
 };
 
 export const setStars = (stars) => ({type: "SET_STARS", data: stars});
+
+export const displayDeclination = ({degrees, minutes, seconds}) => (`${degrees}°${minutes}'${seconds}"`);
+export const displayRightAsc = ({hours, minutes, seconds}) => (`${hours}h ${minutes}m ${seconds}s`);
+export const displayTemp = (temp) => (`${temp}°C`);
+export const displayLy = (dist) => (`${dist} ly`);
+export const displaySolar = (mass) => (<span>{mass}M<sub>☉</sub></span>);
