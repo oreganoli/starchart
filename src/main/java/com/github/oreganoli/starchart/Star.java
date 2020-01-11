@@ -3,26 +3,26 @@ import static com.github.oreganoli.starchart.Constants.*;
 
 public class Star {
     // The primary key in the corresponding DB table - left null when inserting a new star.
-    Integer id;
+    public Integer id;
     // The astronomical name of the star.
-    String name;
+    public String name;
     // What constellation the star belongs to. It is recommended to use the genitive case of the constellation's Latin name.
-    String constellation;
+    public String constellation;
     // Calculated based on the apparent magnitude and distance.
     public double absolute_magnitude;
     // The north-south coordinate on the celestial sphere, measured in degrees, ranging from -90° to 90°
-    Declination declination;
+    public Declination declination;
     // The east-west coordinate, measured in hours, ranging from 0 to 24 hours.
-    RightAscension right_ascension;
+    public RightAscension right_ascension;
     // Calculated based on the declination.
-    Hemisphere hemisphere;
+    public Hemisphere hemisphere;
     // How bright the star appears to be from Earth.
-    double apparent_magnitude;
+    public double apparent_magnitude;
     // The Bayer designation of the star within its constellation using a Greek letter, for example "Alpha Ceti" for the brightest star in the Cetus constellation.
     // This is ignored on inserts and updates, like "id".
-    String catalog_name;
+    public String catalog_name;
     // Temperature in degrees centigrade.
-    double temperature;
+    public double temperature;
     // Distance from the Solar System, measured in light years.
     public double distance;
     // Mass relative to the Sun.
