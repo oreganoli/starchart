@@ -44,5 +44,17 @@ public class Main {
             }
             ctx.json(star);
         });
+        app.post("/search", ctx -> {
+            Criteria criteria;
+            try {
+                criteria = ctx.bodyAsClass(Criteria.class);
+            } catch (Exception e) {
+                e.printStackTrace();
+                ctx.status(422).json(new ErrWrapper("MalformedRequest", "The request did not supply well-formed search criteria."));
+                return;
+            }
+            var stars = repo.search(criteria);
+            ctx.json(stars);
+        });
     }
 }
