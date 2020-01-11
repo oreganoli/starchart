@@ -77,4 +77,21 @@ public class WebController {
             ctx.status(422).json(new ErrWrapper(e));
         }
     }
+
+    public static void delete(Context ctx) {
+        int id;
+        try {
+            id = Integer.parseInt(ctx.pathParam("id"));
+        } catch (Exception e) {
+            ctx.status(422).json(new ErrWrapper("NumberFormat", "The ID of the star to be deleted must be an integer."));
+            return;
+        }
+        try {
+            repo.delete(id);
+        } catch (Exception e) {
+            ctx.status(500).json(new ErrWrapper(e));
+            return;
+        }
+        ctx.status(200);
+    }
 }

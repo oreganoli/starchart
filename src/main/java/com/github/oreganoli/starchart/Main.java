@@ -17,6 +17,7 @@ public class Main {
         app.get("/stars", WebController::get_all_stars);
         app.get("/stars/:id", WebController::get_star);
         app.post("/stars", WebController::upsert);
+        app.delete("/stars/:id", WebController::delete);
         app.post("/search", WebController::search);
     }
 }
