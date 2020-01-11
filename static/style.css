@@ -10,6 +10,11 @@ body, .window, input {
     color: var(--fg);
 }
 
+.error {
+    color: orangered;
+    font-weight: bold;
+}
+
 td, th {
     padding-left: 0.2em;
     padding-right: 0.2em;

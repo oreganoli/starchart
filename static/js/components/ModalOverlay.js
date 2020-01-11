@@ -10,12 +10,12 @@ export const ModalOverlay = (props) => {
         useStoreState(AppStore, s => s.error),
         useStoreState(AppStore, s => s.searchWindow)
     ];
-    if (del != null || edit != null || error != null || searchWindow) {
+    if (del == null && edit == null && error == null && !searchWindow) {
+        return null;
+    } else {
         return <div className={"modal_overlay"}>
             <div className={"modal_dimmer"}/>
             {props.children}
         </div>;
-    } else {
-        return null;
     }
 };
