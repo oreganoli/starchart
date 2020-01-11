@@ -7,17 +7,6 @@ import io.javalin.http.staticfiles.Location;
 import io.javalin.plugin.json.JavalinJson;
 
 public class Main {
-    private static StarRepository repo;
-
-    static {
-        try {
-            repo = new StarRepository();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
-    }
-
     public static void main(String[] args) throws Exception {
         Gson gson = new GsonBuilder().create();
         JavalinJson.setFromJsonMapper(gson::fromJson);
@@ -25,36 +14,8 @@ public class Main {
         Javalin app = Javalin.create(config -> {
             config.addStaticFiles("static", Location.EXTERNAL);
         }).start(9000);
-        app.get("/stars", ctx -> {
-            var stars = repo.read_all();
-            ctx.json(stars);
-        });
-        app.get("/stars/:id", ctx -> {
-            int id;
-            try {
-                id = Integer.parseInt(ctx.pathParam("id"));
-            } catch (Exception e) {
-                ctx.status(422).json(new ErrWrapper("NumberFormat", "The ID of a star must be an integer."));
-                return;
-            }
-            var star = repo.read(id);
-            if (star == null) {
-                ctx.status(404).json(new ErrWrapper("NotFound", String.format("The star with the ID %d does not exist.", id)));
-                return;
-            }
-            ctx.json(star);
-        });
-        app.post("/search", ctx -> {
-            Criteria criteria;
-            try {
-                criteria = ctx.bodyAsClass(Criteria.class);
-            } catch (Exception e) {
-                e.printStackTrace();
-                ctx.status(422).json(new ErrWrapper("MalformedRequest", "The request did not supply well-formed search criteria."));
-                return;
-            }
-            var stars = repo.search(criteria);
-            ctx.json(stars);
-        });
+        app.get("/stars", WebController::get_all_stars);
+        app.get("/stars/:id", WebController::get_star);
+        app.post("/search", WebController::search);
     }
 }
