@@ -12,6 +12,6 @@ public class Main {
         String s = currentRelativePath.toAbsolutePath().toString();
         System.out.println("Current relative path is: " + s);
         var repo = new StarRepository();
-        Blade.of().addStatics("/static").start(WebController.class);
+        Blade.of().start(WebController.class);
     }
 }

@@ -1,5 +1,5 @@
-import {h, render} from "/static/js/web_modules/preact.js";
-import htm from "/static/js/web_modules/htm.js";
+import {h, render} from "/js/web_modules/preact.js";
+import htm from "/js/web_modules/htm.js";
 
 const appName = "starchart";
 const html = htm.bind(h);

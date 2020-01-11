@@ -16,7 +16,7 @@ public class WebController {
     static String indexPage;
     static {
         try {
-            indexPage = Files.readString(Paths.get("src/main/resources/static/index.html"));
+            indexPage = Files.readString(Paths.get("static/index.html"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -108,6 +108,64 @@ public class WebController {
             ctx.json(new ErrWrapper(e));
         }
     }
+
+    @GetRoute("/static/:path")
+    public void static_serve(RouteContext ctx) {
+        String path = "";
+        try {
+            path = ctx.pathString("path");
+        } catch (Exception e) {
+            ctx.status(404);
+            return;
+        }
+        String content = "";
+        try {
+            content = Files.readString(Paths.get(String.format("static/%s", path)));
+        } catch (Exception e) {
+            ctx.status(404);
+            return;
+        }
+        ctx.text(content);
+    }
+
+    @GetRoute("/js/:path")
+    public void static_js(RouteContext ctx) {
+        String path = "";
+        try {
+            path = ctx.pathString("path");
+        } catch (Exception e) {
+            ctx.status(404);
+            return;
+        }
+        String content = "";
+        try {
+            content = Files.readString(Paths.get(String.format("static/js/%s", path)));
+        } catch (Exception e) {
+            ctx.status(404);
+            return;
+        }
+        ctx.text(content).contentType("text/javascript").header("Content-Type", "text/javascript");
+    }
+
+    @GetRoute("/js/web_modules/:path")
+    public void static_js_mod(RouteContext ctx) {
+        String path = "";
+        try {
+            path = ctx.pathString("path");
+        } catch (Exception e) {
+            ctx.status(404);
+            return;
+        }
+        String content = "";
+        try {
+            content = Files.readString(Paths.get(String.format("static/js/web_modules/%s", path)));
+        } catch (Exception e) {
+            ctx.status(404);
+            return;
+        }
+        ctx.text(content).contentType("text/javascript").header("Content-Type", "text/javascript");
+    }
+
 
     @GetRoute("/")
     public void index(RouteContext ctx) {
