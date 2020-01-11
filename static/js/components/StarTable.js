@@ -7,7 +7,9 @@ import {
     displaySolar,
     displayTemp,
     search_stars,
-    setStars
+    setStars,
+    edit,
+    del
 } from "../data/stars";
 import {useDispatch, useSelector} from "react-redux";
 import {useEffect} from "preact/hooks";
@@ -32,8 +34,18 @@ const StarRow = (props) => {
         <td>{displayTemp(temperature)}</td>
         <td>{displayLy(distance)}</td>
         <td>{displaySolar(mass)}</td>
+        <td>
+            <button onClick={() => edit(id)}>📝 Edit</button>
+            <button onClick={() => del(id)}>🗑️ Delete</button>
+        </td>
     </tr>
 };
+
+const Buttons = () => (<div>
+    <button>All stars</button>
+    <button>🔍 Search</button>
+    <button>⭐ Add star</button>
+</div>);
 
 export const StarTable = () => {
     let stars = useSelector(state => state.stars);
@@ -44,10 +56,15 @@ export const StarTable = () => {
     }, [search]);
     let title = search == null ? "All stars" : "Search results";
     if (stars.length === 0) {
-        return <div><h2>{title}</h2><p>No stars loaded.</p></div>
+        return <div>
+            <h2>{title}</h2>
+            <Buttons/>
+            <p>No stars loaded.</p>
+        </div>;
     } else {
         return <div>
             <h2>{title}</h2>
+            <Buttons/>
             <table>
                 <thead>
                 <th>Name</th>
@@ -61,6 +78,7 @@ export const StarTable = () => {
                 <th>Temperature</th>
                 <th>Distance</th>
                 <th>Mass</th>
+                <th>Actions</th>
                 </thead>
                 <tbody>{stars.map(each => <StarRow star={each}/>)}</tbody>
             </table>

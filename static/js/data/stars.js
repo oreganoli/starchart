@@ -30,3 +30,10 @@ export const displayRightAsc = ({hours, minutes, seconds}) => (`${hours}h ${minu
 export const displayTemp = (temp) => (`${temp}°C`);
 export const displayLy = (dist) => (`${dist} ly`);
 export const displaySolar = (mass) => (<span>{mass}M<sub>☉</sub></span>);
+
+export const edit = (id) => {
+    console.log(`Editing is not implemented yet. Was called with id = ${id}.`);
+};
+export const del = (id) => {
+    console.log(`Deleting is not implemented yet. Was called with id = ${id}.`);
+};
