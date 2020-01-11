@@ -18,6 +18,10 @@ const edit_star = (id) => AppStore.update(s => {
 const del_star = (id) => AppStore.update(s => {
     s.del = id;
 });
+const clear_search = () => AppStore.update(s => {
+    s.search = null;
+    console.log("cleared search parameters");
+});
 
 const StarRow = (props) => {
     let {
@@ -47,7 +51,7 @@ const StarRow = (props) => {
 };
 
 const Buttons = () => (<div>
-    <button>All stars</button>
+    <button onClick={clear_search}>All stars</button>
     <button>🔍 Search</button>
     <button>⭐ Add star</button>
 </div>);
