@@ -5,7 +5,7 @@ import StarTable from "./components/StarTable";
 import {ModalOverlay} from "./components/ModalOverlay";
 import {DeleteModal} from "./components/DeleteModal";
 
-render(<div>
+render(<div className={"container"}>
     <ModalOverlay>
         <DeleteModal/>
     </ModalOverlay>

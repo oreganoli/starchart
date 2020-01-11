@@ -1,6 +1,6 @@
 * {
     font-family: 'Alegreya Sans', sans-serif;
-    --bg: rgba(20, 20, 40);
+    --bg: rgb(10, 10, 20);
     --fg: rgb(220, 220, 220);
     color: var(--fg);
 }
@@ -9,10 +9,18 @@ body, .window {
     background-color: var(--bg);
 }
 
+body, div.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 button {
     background-color: var(--bg);
     color: var(--fg);
     padding: 0.2em;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
     border: 1px solid var(--fg);
     border-radius: 2px;
     vertical-align: center;
@@ -21,7 +29,7 @@ button {
 .button_row {
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
+    justify-content: center;
 }
 
 h1 {

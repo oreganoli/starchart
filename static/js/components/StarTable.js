@@ -62,13 +62,13 @@ export const StarTable = () => {
     }, [search]);
     let title = search == null ? "All stars" : "Search results";
     if (stars.length === 0) {
-        return <div>
+        return <div className={"container"}>
             <h2>{title}</h2>
             <Buttons/>
             <p>No stars loaded.</p>
         </div>;
     } else {
-        return <div>
+        return <div className={"container"}>
             <h2>{title}</h2>
             <Buttons/>
             <table>
