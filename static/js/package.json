@@ -4,7 +4,8 @@
   "description": "A JS front-end for starchart",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack",
+    "develop": "webpack --watch"
   },
   "repository": {
     "type": "git",
@@ -13,10 +14,13 @@
   "author": "oreganoli",
   "license": "MIT",
   "devDependencies": {
-    "snowpack": "^1.0.2"
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
   },
   "dependencies": {
     "htm": "^2.2.1",
-    "preact": "^10.2.1"
+    "preact": "^10.2.1",
+    "redux": "^4.0.5",
+    "react-redux": "^7.1.3"
   }
 }

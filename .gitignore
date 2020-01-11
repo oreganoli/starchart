@@ -43,3 +43,5 @@ target/
 
 node_modules
 /target/classes/META-INF/starchart.kotlin_module
+bundle.js
+bundle.js.map
