@@ -6,8 +6,7 @@ import {
     displayRightAsc,
     displaySolar,
     displayTemp,
-    search_stars,
-    setStars
+    search_stars
 } from "../data/stars";
 import {useStoreState} from "pullstate";
 import {useEffect} from "preact/hooks";
