@@ -1,7 +1,7 @@
 import React from "preact/compat";
 import {h} from "preact";
 import {useStoreState} from "pullstate";
-import {delete_star, search_stars} from "../data/stars";
+import {delete_star, refresh, search_stars} from "../data/stars";
 import {AppStore} from "../store";
 
 const accept = (id) => {
@@ -12,9 +12,7 @@ const accept = (id) => {
             AppStore.update(s => {
                 s.del = null;
             });
-        }).then(() => search_stars(search).then(result => AppStore.update(s => {
-        s.stars = result;
-    })));
+        }).then(() => refresh());
 };
 
 const reject = () => {

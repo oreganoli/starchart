@@ -1,5 +1,9 @@
 import React from "preact/compat";
 import {h} from "preact";
+import {AppStore} from "../store";
+import {set_error} from "./error";
+import {useStoreState} from "pullstate";
+
 export const get_all_stars = async () => {
     let request = new Request("/stars", {
         method: "GET"
@@ -27,6 +31,31 @@ export const delete_star = async (id) => {
     });
     await fetch(request);
 };
+
+export const upsert = async (star) => {
+    let request = new Request("/stars", {
+        method: "POST",
+        body: JSON.stringify(star)
+    });
+    let response = await fetch(request);
+    if (response.status !== 200) {
+        let err = await response.json();
+        AppStore.update(s => set_error(s, err));
+    }
+};
+
+export const refresh = async (criteria) => {
+    console.log("Refreshing...");
+    console.log("Search criteria are:");
+    console.log(criteria);
+    let results = await search_stars(criteria);
+    console.log(`reload results are:`);
+    console.log(results);
+    AppStore.update(s => {
+        s.stars = results;
+    });
+};
+
 export const displayDeclination = ({degrees, minutes, seconds}) => (`${degrees}°${minutes}'${seconds}"`);
 export const displayRightAsc = ({hours, minutes, seconds}) => (`${hours}h ${minutes}m ${seconds}s`);
 export const displayTemp = (temp) => (`${temp}°C`);

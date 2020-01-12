@@ -53,14 +53,15 @@ const StarRow = (props) => {
 const Buttons = () => (<div>
     <button onClick={clear_search}>All stars</button>
     <button>🔍 Search</button>
-    <button onClick={AppStore.update(s => {
+    <button onClick={() => AppStore.update(s => {
         s.edit = {};
     })}>⭐ Add star
     </button>
 </div>);
 
 export const StarTable = () => {
-    let stars = useStoreState(AppStore, s => s.stars);
+    let raw_stars = useStoreState(AppStore, s => s.stars);
+    let stars = Array.from(raw_stars);
     let search = useStoreState(AppStore, s => s.search);
     useEffect(() => {
         search_stars(search).then(stars => AppStore.update(s => {

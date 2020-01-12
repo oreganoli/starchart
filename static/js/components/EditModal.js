@@ -3,9 +3,18 @@ import {h} from "preact";
 import {useState} from "preact/hooks";
 import {AppStore} from "../store";
 import {useStoreState} from "pullstate";
+import {refresh, upsert} from "../data/stars";
+
+const accept = (star, criteria) => {
+    upsert(star).then(() => AppStore.update(s => {
+        s.edit = null;
+    })).then(() => refresh())
+};
 
 export const EditModal = () => {
     let edit = useStoreState(AppStore, s => s.edit);
+    let criteria = useStoreState(AppStore, s => s.search);
+    console.log(edit);
     if (edit == null) {
         return null;
     }
@@ -41,7 +50,8 @@ export const EditModal = () => {
         </div>
         <label>Constellation</label>
         <div className={"input_row"}>
-            <input type={"text"} value={workingCopy.constellation}/>
+            <input type={"text"} value={workingCopy.constellation}
+                   onChange={(e) => setWorkingCopy({...workingCopy, constellation: e.target.value})}/>
         </div>
         <label>Declination</label>
         <div className={"input_row"}>
@@ -112,7 +122,7 @@ export const EditModal = () => {
             <b>M<sub>☉</sub></b>
         </div>
         <div className={"button_row"}>
-            <button onClick={() => console.log(workingCopy)}>Save</button>
+            <button onClick={() => accept(workingCopy, criteria)}>Save</button>
             <button onClick={() => AppStore.update(s => {
                 s.edit = null;
             })}>Cancel
