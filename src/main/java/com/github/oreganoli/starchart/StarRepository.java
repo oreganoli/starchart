@@ -39,12 +39,12 @@ public class StarRepository {
                                                   "        name VARCHAR(7) NOT NULL UNIQUE CHECK (name ~ '[A-Z]{3}[0-9]{4}'),\n" +
                                                   "        catalog_name VARCHAR DEFAULT NULL,\n" +
                                                   "        constellation VARCHAR NOT NULL,\n" +
-                                                  "        decl_degs INTEGER NOT NULL CHECK(decl_degs BETWEEN -90 AND 90),\n" +
-                                                  "        decl_mins INTEGER NOT NULL CHECK(decl_mins BETWEEN -59 AND 59),\n" +
-                                                  "        decl_secs INTEGER NOT NULL CHECK(decl_secs BETWEEN -59 AND 59),\n" +
-                                                  "        ra_hrs INTEGER NOT NULL CHECK(ra_hrs BETWEEN 0 AND 24),\n" +
-                                                  "        ra_mins INTEGER NOT NULL CHECK(ra_mins BETWEEN 0 AND 59),\n" +
-                                                  "        ra_secs INTEGER NOT NULL CHECK(decl_mins BETWEEN 0 AND 59),\n" +
+                                                  "        decl_degs INTEGER NOT NULL,\n" +
+                                                  "        decl_mins INTEGER NOT NULL,\n" +
+                                                  "        decl_secs INTEGER NOT NULL,\n" +
+                                                  "        ra_hrs INTEGER NOT NULL,\n" +
+                                                  "        ra_mins INTEGER NOT NULL,\n" +
+                                                  "        ra_secs INTEGER NOT NULL,\n" +
                                                   "        distance_ly DOUBLE PRECISION NOT NULL CHECK(distance_ly > 0),\n" +
                                                   "        apparent_magnitude DOUBLE PRECISION NOT NULL CHECK (apparent_magnitude BETWEEN -26.74 AND 15.00),\n" +
                                                   "        temperature_c DOUBLE PRECISION NOT NULL CHECK (temperature_c >= 2000),\n" +
