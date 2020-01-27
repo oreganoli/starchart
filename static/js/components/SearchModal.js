@@ -12,21 +12,26 @@ const reject = () => {
     });;
 }
 const accept = (criteria, checks) => {
+    var crit = criteria;
     if (!checks.constellation) {
-        criteria.constellation = null;
+        crit.constellation = null;
     }
     AppStore.update(s => {
         s.searchWindow = false;
-        s.search = criteria;
+        s.search = crit;
     })
+    search_stars(crit).then(stars => AppStore.update(s => {
+        s.stars = stars;
+    }));
 };
 export const SearchModal = () => {
-    let search = useStoreState(AppStore, s => s.searchWindow)
+    let search = useStoreState(AppStore, s => s.search)
+    let searchWindow = useStoreState(AppStore, s => s.searchWindow)
     let [tempCrit, setTempCrit] = useState(search || defaultSearch());
     let [checks, setChecks] = useState({
-        constellation: tempCrit.constellation != null,
+        constellation: tempCrit.constellation != null
     })
-    if (!search) {
+    if (!searchWindow) {
         return null;
     }
     return <div className="window">
