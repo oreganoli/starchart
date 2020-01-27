@@ -12,6 +12,7 @@ module.exports = {
             "react-dom": "preact/compat"
         }
     },
+    "mode": "development",
     "devtool": "sourcemap",
     module: {
         rules: [
