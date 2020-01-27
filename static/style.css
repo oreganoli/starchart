@@ -20,6 +20,14 @@ td, th {
     padding-right: 0.2em;
     font-size: 0.9em;
 }
+tbody, thead, td, th, table, tr {
+    border: 1px solid;
+    border-collapse: collapse;
+    border-color: var(--fg);
+}
+table {
+    margin-top: 1em;
+}
 
 h1, h2 {
     text-align: center;
