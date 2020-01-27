@@ -5,7 +5,7 @@
     color: var(--fg);
 }
 
-body, .window, input {
+body, option, select, .window, input {
     background-color: var(--bg);
     color: var(--fg);
 }
