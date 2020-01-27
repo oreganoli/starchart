@@ -52,7 +52,9 @@ const StarRow = (props) => {
 
 const Buttons = () => (<div>
     <button onClick={clear_search}>All stars</button>
-    <button>🔍 Search</button>
+    <button onClick={() => AppStore.update(s => {
+        s.searchWindow = true;
+    })}>🔍 Search</button>
     <button onClick={() => AppStore.update(s => {
         s.edit = {};
     })}>⭐ Add star
