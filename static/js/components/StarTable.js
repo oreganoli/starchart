@@ -83,6 +83,7 @@ export const StarTable = () => {
             <Buttons/>
             <table>
                 <thead>
+                <tr>
                 <th>Name</th>
                 <th>Constellation</th>
                 <th>Catalog name</th>
@@ -95,6 +96,7 @@ export const StarTable = () => {
                 <th>Distance</th>
                 <th>Mass</th>
                 <th>Actions</th>
+                </tr>
                 </thead>
                 <tbody>{stars.map(each => <StarRow star={each}/>)}</tbody>
             </table>
