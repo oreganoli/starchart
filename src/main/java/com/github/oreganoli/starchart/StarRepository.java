@@ -11,7 +11,9 @@ import java.util.Objects;
 
 
 @SuppressWarnings("DuplicatedCode")
+/** This is the data access object of the application. */
 public class StarRepository {
+    /** Hikari connection pool. */
     HikariDataSource source;
     public StarRepository() throws Exception {
         var dbUrl = System.getenv("STARCHART_DB_URL");
@@ -32,42 +34,42 @@ public class StarRepository {
         return source.getConnection();
     }
 
+    /** Sets up the DB table. */
     public void initialize() throws Exception {
-        var initStatement = conn().prepareStatement("""
-                    CREATE TABLE IF NOT EXISTS stars (
-                        id SERIAL PRIMARY KEY,
-                        name VARCHAR(7) NOT NULL UNIQUE CHECK (name ~ '[A-Z]{3}[0-9]{4}'),
-                        catalog_name VARCHAR DEFAULT NULL,
-                        constellation VARCHAR NOT NULL,
-                        decl_degs INTEGER NOT NULL CHECK(decl_degs BETWEEN -90 AND 90),
-                        decl_mins INTEGER NOT NULL CHECK(decl_mins BETWEEN -59 AND 59),
-                        decl_secs INTEGER NOT NULL CHECK(decl_secs BETWEEN -59 AND 59),
-                        ra_hrs INTEGER NOT NULL CHECK(ra_hrs BETWEEN 0 AND 24),
-                        ra_mins INTEGER NOT NULL CHECK(ra_mins BETWEEN 0 AND 59),
-                        ra_secs INTEGER NOT NULL CHECK(decl_mins BETWEEN 0 AND 59),
-                        distance_ly DOUBLE PRECISION NOT NULL CHECK(distance_ly > 0),
-                        apparent_magnitude DOUBLE PRECISION NOT NULL CHECK (apparent_magnitude BETWEEN -26.74 AND 15.00),
-                        temperature_c DOUBLE PRECISION NOT NULL CHECK (temperature_c >= 2000),
-                        mass DOUBLE PRECISION NOT NULL CHECK (mass BETWEEN 0.1 AND 50)
-                    );
-                """);
+        var conn = conn();
+        var initStatement = conn.prepareStatement("    CREATE TABLE IF NOT EXISTS stars (\n" +
+                                                  "        id SERIAL PRIMARY KEY,\n" +
+                                                  "        name VARCHAR(7) NOT NULL UNIQUE CHECK (name ~ '[A-Z]{3}[0-9]{4}'),\n" +
+                                                  "        catalog_name VARCHAR DEFAULT NULL,\n" +
+                                                  "        constellation VARCHAR NOT NULL,\n" +
+                                                  "        decl_degs INTEGER NOT NULL,\n" +
+                                                  "        decl_mins INTEGER NOT NULL,\n" +
+                                                  "        decl_secs INTEGER NOT NULL,\n" +
+                                                  "        ra_hrs INTEGER NOT NULL,\n" +
+                                                  "        ra_mins INTEGER NOT NULL,\n" +
+                                                  "        ra_secs INTEGER NOT NULL,\n" +
+                                                  "        distance_ly DOUBLE PRECISION NOT NULL CHECK(distance_ly > 0),\n" +
+                                                  "        apparent_magnitude DOUBLE PRECISION NOT NULL CHECK (apparent_magnitude BETWEEN -26.74 AND 15.00),\n" +
+                                                  "        temperature_c DOUBLE PRECISION NOT NULL CHECK (temperature_c >= 2000),\n" +
+                                                  "        mass DOUBLE PRECISION NOT NULL CHECK (mass BETWEEN 0.1 AND 50)\n" +
+                                                  "    );\n");
         initStatement.execute();
+        conn.close();
     }
-
-    private void create(Star star) throws Exception {
+    
+    private int create(Star star) throws Exception {
         var conn = conn();
         var unq = conn.prepareStatement("SELECT EXISTS (SELECT id FROM stars WHERE name = ?);");
         unq.setString(1, star.name);
         var urs = unq.executeQuery();
         if (urs.next() && urs.getBoolean(1)) {
-            throw new IllegalArgumentException("This name is already taken by another star.");
+            throw new AlreadyExistsException("This name is already taken by another star.");
         }
-        var ins = conn.prepareStatement("""
-                INSERT INTO stars
-                (name, constellation, decl_degs, decl_mins, decl_secs, ra_hrs, ra_mins, ra_secs, distance_ly, apparent_magnitude, temperature_c, mass)
-                VALUES
-                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
-                """);
+        var ins = conn.prepareStatement("INSERT INTO stars\n" +
+                                        "(name, constellation, decl_degs, decl_mins, decl_secs, ra_hrs, ra_mins, ra_secs, distance_ly, apparent_magnitude, temperature_c, mass)\n" +
+                                        "VALUES\n" +
+                                        "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)\n" +
+                                        "RETURNING id;\n");
         ins.setString(1, star.name);
         ins.setString(2, star.constellation);
         ins.setInt(3, star.declination.degrees);
@@ -80,25 +82,34 @@ public class StarRepository {
         ins.setDouble(10, star.apparent_magnitude);
         ins.setDouble(11, star.temperature);
         ins.setDouble(12, star.mass);
-        ins.execute();
+        var idr = ins.executeQuery();
+        int id = 0;
+        while (idr.next()) {
+            id = idr.getInt(1);
+        }
         conn.close();
+        return id;
     }
 
+    /**
+     * Reads a particular star.
+     * @param id ID of the star to get.
+     * @return Star data; null if not found
+     * @throws Exception on DB errors.
+     */
     public Star read(int id) throws Exception {
         var conn = conn();
-        var stmt = conn.prepareStatement("""
-                SELECT
-                id, name, constellation, catalog_name,
-                decl_degs, decl_mins, decl_secs,
-                ra_hrs, ra_mins, ra_secs,
-                distance_ly, apparent_magnitude, temperature_c, mass
-                FROM stars
-                WHERE id = ?;""");
+        var stmt = conn.prepareStatement("SELECT\n" +
+                                         "id, name, constellation, catalog_name,\n" +
+                                         "decl_degs, decl_mins, decl_secs,\n" +
+                                         "ra_hrs, ra_mins, ra_secs,\n" +
+                                         "distance_ly, apparent_magnitude, temperature_c, mass\n" +
+                                         "FROM stars\n" +
+                                         "WHERE id = ?;");
         stmt.setInt(1, id);
         var rs = stmt.executeQuery();
         if (rs.next()) {
-            conn.close();
-            return new Star(
+            var ret = new Star(
                     rs.getInt(1),
                     rs.getString(2),
                     rs.getString(3),
@@ -109,23 +120,27 @@ public class StarRepository {
                     new Declination(rs.getInt(5), rs.getInt(6), rs.getInt(7)),
                     new RightAscension(rs.getInt(8), rs.getInt(9), rs.getInt(10)),
                     rs.getDouble(12));
+            conn.close();
+            return ret;
         } else {
             conn.close();
             return null;
         }
     }
-
+    /**
+     * Reads all the stars.
+     * @return List of stars
+     * @throws Exception on DB errors.
+     */
     public ArrayList<Star> read_all() throws Exception {
         var conn = conn();
-        var read_stmt = conn.prepareStatement("""
-                SELECT
-                id, name, constellation, catalog_name,
-                decl_degs, decl_mins, decl_secs,
-                ra_hrs, ra_mins, ra_secs,
-                distance_ly, apparent_magnitude, temperature_c, mass
-                FROM stars
-                ORDER BY id;
-                """);
+        var read_stmt = conn.prepareStatement("SELECT\n" +
+                                              "id, name, constellation, catalog_name,\n" +
+                                              "decl_degs, decl_mins, decl_secs,\n" +
+                                              "ra_hrs, ra_mins, ra_secs,\n" +
+                                              "distance_ly, apparent_magnitude, temperature_c, mass\n" +
+                                              "FROM stars\n" +
+                                              "ORDER BY constellation;\n");
         var list = new ArrayList<Star>();
         var rs = read_stmt.executeQuery();
         while (rs.next()) {
@@ -146,24 +161,22 @@ public class StarRepository {
         return list;
     }
 
-    private void update(Star star) throws Exception {
+    private int update(Star star) throws Exception {
         var conn = conn();
-        var ins = conn.prepareStatement("""
-                UPDATE stars SET
-                name = ?,
-                constellation = ?,
-                decl_degs = ?,
-                decl_mins = ?,
-                decl_secs = ?,
-                ra_hrs = ?,
-                ra_mins = ?,
-                ra_secs = ?,
-                distance_ly = ?,
-                apparent_magnitude = ?,
-                temperature_c = ?,
-                mass = ?
-                WHERE id = ?;
-                """);
+        var ins = conn.prepareStatement("UPDATE stars SET\n" +
+                                        "name = ?,\n" +
+                                        "constellation = ?,\n" +
+                                        "decl_degs = ?,\n" +
+                                        "decl_mins = ?,\n" +
+                                        "decl_secs = ?,\n" +
+                                        "ra_hrs = ?,\n" +
+                                        "ra_mins = ?,\n" +
+                                        "ra_secs = ?,\n" +
+                                        "distance_ly = ?,\n" +
+                                        "apparent_magnitude = ?,\n" +
+                                        "temperature_c = ?,\n" +
+                                        "mass = ?\n" +
+                                        "WHERE id = ?;\n");
         ins.setString(1, star.name);
         ins.setString(2, star.constellation);
         ins.setInt(3, star.declination.degrees);
@@ -179,28 +192,45 @@ public class StarRepository {
         ins.setInt(13, star.id);
         ins.execute();
         conn.close();
+        return star.id;
     }
 
-    public void upsert(Star star) throws Exception {
+    /**
+     * This is where new stars are saved or existing ones are modified.
+     * Internally, this method decides between actual update and insert methods depending on the star's ID field.
+     * A null ID results in an insert, a non-null one in an update.
+     * @param star Star to insert or update.
+     * @return The id of the newly created or modified star.
+     * @throws Exception on DB errors.
+     */
+    public int upsert(Star star) throws Exception {
+        StarExceptionThrower.validate(star);
+        int id;
         if (star.id == null) {
-            create(star);
+            id = create(star);
         } else {
-            update(star);
+            id = update(star);
         }
         rename_stars();
+        return id;
     }
-
+    /**
+     * Deletes a star. Idempotent - will not throw on an already-nonexistent star.
+     * @param id ID of the star to delete.
+     * @throws Exception on DB errors.
+     */
     public void delete(int id) throws Exception {
         var conn = conn();
-        var stmt = conn.prepareStatement("""
-                DELETE FROM stars WHERE id = ?;
-                """);
+        var stmt = conn.prepareStatement("DELETE FROM stars WHERE id = ?;\n");
         stmt.setInt(1, id);
         stmt.execute();
         rename_stars();
         conn.close();
     }
-
+    /**
+     * Called internally after updates and inserts. Sorts stars by apparent magnitude and hands out new Bayer designations appropriately.
+     * @throws Exception on DB errors.
+     */
     public void rename_stars() throws Exception {
         var map = new HashMap<String, ArrayList<Integer>>();
         var conn = conn();
@@ -208,11 +238,9 @@ public class StarRepository {
         while (consts_rs.next()) {
             map.put(consts_rs.getString(1), new ArrayList<>());
         }
-        var read_rs = conn.prepareStatement("""
-                SELECT id, constellation
-                FROM stars
-                ORDER BY apparent_magnitude;
-                """).executeQuery();
+        var read_rs = conn.prepareStatement("SELECT id, constellation\n" +
+                                            "FROM stars\n" +
+                                            "ORDER BY apparent_magnitude;\n").executeQuery();
         while (read_rs.next()) {
             map.get(read_rs.getString(2)).add(read_rs.getInt(1));
         }
@@ -228,26 +256,30 @@ public class StarRepository {
         conn.close();
     }
 
+    /**
+     * Searches for stars matching the given criteria.
+     * @param criteria The search criteria, see the Criteria type.
+     * @return List of stars matching the given criteria.
+     * @throws Exception on DB errors.
+     */
     public ArrayList<Star> search(Criteria criteria) throws Exception {
         if (criteria == null) {
             return read_all();
         }
         var conn = conn();
-        var query = conn.prepareStatement("""
-                SELECT
-                id, name, constellation, catalog_name,
-                decl_degs, decl_mins, decl_secs,
-                ra_hrs, ra_mins, ra_secs,
-                distance_ly, apparent_magnitude, temperature_c, mass
-                FROM stars
-                WHERE
-                constellation LIKE ? AND
-                distance_ly BETWEEN ? AND ? AND
-                temperature_c BETWEEN ? AND ? AND
-                apparent_magnitude BETWEEN ? AND ? AND
-                mass BETWEEN ? AND ?
-                ORDER BY id;
-                """);
+        var query = conn.prepareStatement("SELECT\n" +
+                                          "id, name, constellation, catalog_name,\n" +
+                                          "decl_degs, decl_mins, decl_secs,\n" +
+                                          "ra_hrs, ra_mins, ra_secs,\n" +
+                                          "distance_ly, apparent_magnitude, temperature_c, mass\n" +
+                                          "FROM stars\n" +
+                                          "WHERE\n" +
+                                          "constellation LIKE ? AND\n" +
+                                          "distance_ly BETWEEN ? AND ? AND\n" +
+                                          "temperature_c BETWEEN ? AND ? AND\n" +
+                                          "apparent_magnitude BETWEEN ? AND ? AND\n" +
+                                          "mass BETWEEN ? AND ?\n" +
+                                          "ORDER BY constellation;\n");
         // If a particular criterion is null and thus irrelevant, then the sides of the BETWEEN clause are filled with the minimum and maximum legal values, making it meaningless.
         // This lets us avoid dynamically composing the query.
         // Unfortunately, filtering by hemisphere has to be done after retrieving the data, as it isn't an atomic scalar value we could do this with.

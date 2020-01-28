@@ -37,5 +37,16 @@ hs_err_pid*
 .idea/**/contentModel.xml
 .idea/**/gradle.xml
 .idea/**/libraries
-
+.idea
 out/
+target/
+
+node_modules
+/target/classes/META-INF/starchart.kotlin_module
+bundle.js
+bundle.js.map
+
+.vscode
+.settings
+.project
+.classpath

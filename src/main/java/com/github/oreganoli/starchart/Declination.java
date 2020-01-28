@@ -1,5 +1,6 @@
 package com.github.oreganoli.starchart;
 
+/** A star's north-south coordinate on the celestial sphere, measured in degrees, ranging from -90° to 90° */
 public class Declination {
     private static int MAX_DEGREES = 90;
     private static int MAX_MINSEC = 59;
