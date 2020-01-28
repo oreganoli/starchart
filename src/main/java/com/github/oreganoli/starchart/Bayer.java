@@ -2,6 +2,7 @@ package com.github.oreganoli.starchart;
 
 /** Helper class for generating Bayer designations for stars. */
 public class Bayer {
+    /** The Greek alphabet, used first. */
     static final String[] GREEK = {
             "Alpha",
             "Beta",
@@ -28,6 +29,7 @@ public class Bayer {
             "Psi",
             "Omega"
     };
+    /** The Latin alphabet used when we run out of Greek letters. */
     static final String LATIN = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     /**
      * 
