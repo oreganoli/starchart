@@ -11,7 +11,9 @@ import java.util.Objects;
 
 
 @SuppressWarnings("DuplicatedCode")
+/** This is the data access object of the application. */
 public class StarRepository {
+    /** Hikari connection pool. */
     HikariDataSource source;
     public StarRepository() throws Exception {
         var dbUrl = System.getenv("STARCHART_DB_URL");
@@ -32,6 +34,7 @@ public class StarRepository {
         return source.getConnection();
     }
 
+    /** Sets up the DB table. */
     public void initialize() throws Exception {
         var conn = conn();
         var initStatement = conn.prepareStatement("    CREATE TABLE IF NOT EXISTS stars (\n" +
@@ -53,7 +56,7 @@ public class StarRepository {
         initStatement.execute();
         conn.close();
     }
-
+    
     private int create(Star star) throws Exception {
         var conn = conn();
         var unq = conn.prepareStatement("SELECT EXISTS (SELECT id FROM stars WHERE name = ?);");
@@ -88,6 +91,12 @@ public class StarRepository {
         return id;
     }
 
+    /**
+     * Reads a particular star.
+     * @param id ID of the star to get.
+     * @return Star data; null if not found
+     * @throws Exception on DB errors.
+     */
     public Star read(int id) throws Exception {
         var conn = conn();
         var stmt = conn.prepareStatement("SELECT\n" +
@@ -118,7 +127,11 @@ public class StarRepository {
             return null;
         }
     }
-
+    /**
+     * Reads all the stars.
+     * @return List of stars
+     * @throws Exception on DB errors.
+     */
     public ArrayList<Star> read_all() throws Exception {
         var conn = conn();
         var read_stmt = conn.prepareStatement("SELECT\n" +
@@ -182,6 +195,14 @@ public class StarRepository {
         return star.id;
     }
 
+    /**
+     * This is where new stars are saved or existing ones are modified.
+     * Internally, this method decides between internal update and insert methods depending on the star's ID field.
+     * A null ID results in an insert, a non-null one in an update.
+     * @param star Star to insert or update.
+     * @return The id of the newly created or modified star.
+     * @throws Exception on DB errors.
+     */
     public int upsert(Star star) throws Exception {
         StarExceptionThrower.validate(star);
         int id;
@@ -193,7 +214,11 @@ public class StarRepository {
         rename_stars();
         return id;
     }
-
+    /**
+     * Deletes a star. Idempotent - will not throw on an already-nonexistent star.
+     * @param id ID of the star to delete.
+     * @throws Exception on DB errors.
+     */
     public void delete(int id) throws Exception {
         var conn = conn();
         var stmt = conn.prepareStatement("DELETE FROM stars WHERE id = ?;\n");
@@ -202,7 +227,10 @@ public class StarRepository {
         rename_stars();
         conn.close();
     }
-
+    /**
+     * Called internally after updates and inserts. Sorts stars by apparent magnitude and hands out new Bayer designations appropriately.
+     * @throws Exception on DB errors.
+     */
     public void rename_stars() throws Exception {
         var map = new HashMap<String, ArrayList<Integer>>();
         var conn = conn();
@@ -228,6 +256,12 @@ public class StarRepository {
         conn.close();
     }
 
+    /**
+     * Searches for stars matching the given criteria.
+     * @param criteria The search criteria, see the Criteria type.
+     * @return List of stars matching the given criteria.
+     * @throws Exception on DB errors.
+     */
     public ArrayList<Star> search(Criteria criteria) throws Exception {
         if (criteria == null) {
             return read_all();
