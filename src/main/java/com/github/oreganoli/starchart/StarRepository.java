@@ -197,7 +197,7 @@ public class StarRepository {
 
     /**
      * This is where new stars are saved or existing ones are modified.
-     * Internally, this method decides between internal update and insert methods depending on the star's ID field.
+     * Internally, this method decides between actual update and insert methods depending on the star's ID field.
      * A null ID results in an insert, a non-null one in an update.
      * @param star Star to insert or update.
      * @return The id of the newly created or modified star.

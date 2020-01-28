@@ -3,6 +3,7 @@ package com.github.oreganoli.starchart;
 
 import io.javalin.http.Context;
 
+/** Wraps the repository. Contains HTTP request handlers that return the appriopriate responses. */
 public class WebController {
     static StarRepository repo;
 
