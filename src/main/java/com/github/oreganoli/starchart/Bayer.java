@@ -1,5 +1,6 @@
 package com.github.oreganoli.starchart;
 
+/** Helper class for generating Bayer designations for stars. */
 public class Bayer {
     static final String[] GREEK = {
             "Alpha",
@@ -28,7 +29,12 @@ public class Bayer {
             "Omega"
     };
     static final String LATIN = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
+    /**
+     * 
+     * @param i The rank of the star, by apparent magnitude, in ascending order.
+     * @param constellation The constellation's name.
+     * @return A full Bayer designation for the given index and constellation name.
+     */
     public static String designation(int i, String constellation) {
         if (i < 0) {
             throw new IllegalArgumentException("Invalid index");
