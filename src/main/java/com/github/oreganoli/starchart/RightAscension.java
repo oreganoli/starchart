@@ -1,5 +1,6 @@
 package com.github.oreganoli.starchart;
 
+/** A star's east-west coordinate, measured in hours, ranging from 0 to 24 hours. */
 public class RightAscension {
     private static final int MAX_HOURS = 24;
     private static final int MAX_MINSEC = 59;
