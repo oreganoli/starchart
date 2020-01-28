@@ -19,6 +19,13 @@ const accept = (criteria, checks) => {
     if (crit.hemisphere == "Any") {
         crit.hemisphere = null;
     }
+    if (crit.potential_supernovae == "No") {
+        crit.potential_supernovae = false;
+    } else if (crit.potential_supernovae == "Yes") {
+        crit.potential_supernovae = true;
+    } else {
+        crit.potential_supernovae = null;
+    }
     console.log(crit);
     AppStore.update(s => {
         s.searchWindow = false;
@@ -80,10 +87,10 @@ export const SearchModal = () => {
         </div>
         <label>Potential supernovae</label>
         <div className="input_row">
-            <select>
-                <option value={null} selected>Either</option>
-                <option value={true}>Yes</option>
-                <option value={false}>No</option>
+            <select onChange={(e) => {console.log(e.target.value);setTempCrit({...tempCrit, potential_supernovae: e.target.value})}}>
+                <option value="Either" selected={tempCrit.potential_supernovae == null}>Either</option>
+                <option value="Yes" selected={tempCrit.potential_supernovae === true || tempCrit.potential_supernovae == "Yes"}>Yes</option>
+                <option value="No" selected={tempCrit.potential_supernovae === false || tempCrit.potential_supernovae == "No"}>No</option>
             </select>
         </div>
         <div className="button_row">
