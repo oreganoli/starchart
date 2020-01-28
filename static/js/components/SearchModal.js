@@ -16,6 +16,9 @@ const accept = (criteria, checks) => {
     if (!checks.constellation) {
         crit.constellation = null;
     }
+    if (crit.hemisphere == "Any") {
+        crit.hemisphere = null;
+    }
     console.log(crit);
     AppStore.update(s => {
         s.searchWindow = false;
@@ -30,7 +33,10 @@ export const SearchModal = () => {
     let searchWindow = useStoreState(AppStore, s => s.searchWindow)
     let [tempCrit, setTempCrit] = useState(search || defaultSearch());
     let [checks, setChecks] = useState({
-        constellation: tempCrit.constellation != null
+        constellation: tempCrit.constellation != null,
+        distance_parsecs: tempCrit.distance_parsecs != null,
+        temperature: tempCrit.distance != null,
+        apparent_magnitude: tempCrit.apparent_magnitude != null
     })
     if (!searchWindow) {
         return null;
@@ -65,11 +71,11 @@ export const SearchModal = () => {
         </div>
         <label>Hemisphere</label>
         <div className="input_row">
-            <select>
-                <option value={null} selected>Any</option>
-                <option value="Northern">Northern</option>
-                <option value="Southern">Southern</option>
-                <option value="Equatorial">Equatorial</option>
+            <select onChange={(e) => setTempCrit({...tempCrit, hemisphere: e.target.value})}>
+                <option value="Any" selected={tempCrit.hemisphere == "Any" || tempCrit.hemisphere == null}>Any</option>
+                <option value="Northern" selected={tempCrit.hemisphere == "Northern"}>Northern</option>
+                <option value="Southern" selected={tempCrit.hemisphere == "Southern"}>Southern</option>
+                <option value="Equatorial" selected={tempCrit.hemisphere == "Equatorial"}>Equatorial</option> 
             </select>
         </div>
         <label>Potential supernovae</label>
